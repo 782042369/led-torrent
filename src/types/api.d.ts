@@ -2,14 +2,14 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 16:02:41
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-01 16:18:33
+ * @LastEditTime: 2023-11-01 18:57:50
  * @Description:
  */
 namespace PTAPI {
   /** 用户做种列表 */
   interface TorrentList {
     data?: {
-      id: number;
+      id: string;
     }[];
     meta?: {
       to: number;

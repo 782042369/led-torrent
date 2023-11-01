@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 16:11:59
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-01 16:12:03
+ * @LastEditTime: 2023-11-01 19:06:45
  * @Description:
  */
 type RequestOptions = {
@@ -31,18 +31,13 @@ async function request<T>(
 ): Promise<T> {
   const { method = 'GET', headers = {}, body, timeout } = options;
 
-  const defaultHeaders = {
-    'Content-Type': 'application/json',
-    ...headers
-  };
-
   try {
     const response = await fetchWithTimeout(
       url,
       {
         method,
-        headers: defaultHeaders,
-        body: body ? JSON.stringify(body) : undefined
+        headers,
+        body: body
       },
       timeout
     );
@@ -52,6 +47,9 @@ async function request<T>(
     }
 
     // Assuming server always returns JSON. If not, you might want to handle this differently.
+    if (url.includes('getusertorrentlistajax')) {
+      return (await response.text()) as T;
+    }
     return await response.json();
   } catch (error) {
     console.error('Fetch error: ', error);

@@ -1,3 +1,10 @@
+/*
+ * @Author: yanghongxuan
+ * @Date: 2023-11-01 15:56:38
+ * @LastEditors: yanghongxuan
+ * @LastEditTime: 2023-11-01 18:25:56
+ * @Description:
+ */
 export const cssContent = `.bubbly-button {
     font-family: "Helvetica", "Arial", sans-serif;
     display: inline-block;
@@ -82,7 +89,7 @@ export const cssContent = `.bubbly-button {
     }
   }`;
 /** 插入样式内容到页面头部 */
-export function includeCss(content) {
+export function includeCss(content: string) {
   const styleEl = document.createElement('style');
   styleEl.textContent = content;
   document.head.appendChild(styleEl);
