@@ -1,3 +1,10 @@
+/*
+ * @Author: yanghongxuan
+ * @Date: 2023-11-01 14:46:20
+ * @LastEditors: yanghongxuan
+ * @LastEditTime: 2023-11-01 15:51:52
+ * @Description:
+ */
 import webExtension from '@samrum/vite-plugin-web-extension';
 import { resolve } from 'path';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
@@ -37,7 +44,7 @@ export default ({ mode, command }) => {
       }
     },
     build: {
-      outDir: '../dist',
+      outDir: '../一键领种',
       emptyOutDir: true,
       cssCodeSplit: true,
       sourcemap: true,

@@ -1,25 +1,32 @@
+/*
+ * @Author: yanghongxuan
+ * @Date: 2023-11-01 15:02:24
+ * @LastEditors: yanghongxuan
+ * @LastEditTime: 2023-11-01 15:52:01
+ * @Description:
+ */
 const manifest = {
   manifest_version: 3,
   homepage_url: 'https://demo.xxx.com',
   name: '一键领种',
   description: 'pt一键领种',
-  version: '0.1',
+  version: '0.2',
   icons: {
-    '16': 'icon/icon-16.png',
-    '32': 'icon/icon-32.png',
-    '48': 'icon/icon-48.png',
-    '64': 'icon/icon-64.png',
-    '128': 'icon/icon-128.png'
+    '16': 'icon/logo.png',
+    '32': 'icon/logo.png',
+    '48': 'icon/logo.png',
+    '64': 'icon/logo.png',
+    '128': 'icon/logo.png'
   },
   action: {
     default_title: 'chrome demo',
     default_popup: './index.html',
     default_icon: {
-      '16': 'icon/icon-16.png',
-      '32': 'icon/icon-32.png',
-      '48': 'icon/icon-48.png',
-      '64': 'icon/icon-64.png',
-      '128': 'icon/icon-128.png'
+      '16': 'icon/logo.png',
+      '32': 'icon/logo.png',
+      '48': 'icon/logo.png',
+      '64': 'icon/logo.png',
+      '128': 'icon/logo.png'
     }
   },
   content_security_policy: {
