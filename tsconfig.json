@@ -42,7 +42,8 @@
         "src/**/*.tsx",
         "src/**/*.vue",
         "src/manifest.tst.ts",
-        "public/inject.ts"
+        "public/inject.ts",
+        "src/types"
     ],
     "exclude": [
         "./src/background.ts"
