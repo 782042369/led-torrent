@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 16:11:59
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-01 19:06:45
+ * @LastEditTime: 2023-11-01 23:51:00
  * @Description:
  */
 type RequestOptions = {
@@ -41,19 +41,20 @@ async function request<T>(
       },
       timeout
     );
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+    if (
+      response.status === 500 ||
+      response.status === 404 ||
+      response.status === 403
+    ) {
+      return Promise.reject(response);
     }
-
-    // Assuming server always returns JSON. If not, you might want to handle this differently.
     if (url.includes('getusertorrentlistajax')) {
       return (await response.text()) as T;
     }
     return await response.json();
-  } catch (error) {
+  } catch (error: any) {
     console.error('Fetch error: ', error);
-    throw error;
+    return error;
   }
 }
 export default request;

@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 12:15:00
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-01 19:03:33
+ * @LastEditTime: 2023-11-01 19:53:41
  * @Description:
  */
 
@@ -17,17 +17,18 @@ export const getNPHPUserTorrent = async (params: { page: number }) => {
     }
   );
 };
+
 /** 认领种子 */
-export const getLedTorrent = (id: string) => {
+export const getNPHPLedTorrent = (id: string) => {
   const body = new FormData();
   body.append('action', 'addClaim');
   body.append('params[torrent_id]', id + '');
-  console.log('body: ', body);
   return request<PTAPI.LedTorrentDetails>(`/ajax.php`, {
     method: 'POST',
     body
   });
 };
+
 /** 获取用户种子详情 */
 export const getNPHPUsertorrentlistajax = async (params: {
   page: number;
