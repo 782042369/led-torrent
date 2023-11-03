@@ -2,11 +2,11 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 12:15:00
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-01 19:53:41
+ * @LastEditTime: 2023-11-03 15:06:46
  * @Description:
  */
 
-import request from './utils/request';
+import request from './request';
 
 /** 获取用户种子详情 */
 export const getNPHPUserTorrent = async (params: { page: number }) => {

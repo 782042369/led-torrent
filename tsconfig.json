@@ -20,19 +20,11 @@
             "@/*": [
                 "src/*"
             ],
-            "plugins/*": [
-                "src/plugins/*"
-            ],
-            "store/*": [
-                "src/store/*"
-            ]
         },
         "allowSyntheticDefaultImports": true
     },
     "types": [
         "vite/client",
-        "element-plus/global",
-        "pinia-plugin-persist",
         "node_modules"
     ],
     "skipLibCheck": true,
@@ -40,14 +32,8 @@
         "src/**/*.ts",
         "src/**/*.d.ts",
         "src/**/*.tsx",
-        "src/**/*.vue",
-        "src/manifest.tst.ts",
-        "public/inject.ts",
-        "src/types"
     ],
-    "exclude": [
-        "./src/background.ts"
-    ],
+    "exclude": [],
     "references": [
         {
             "path": "./tsconfig.node.json"

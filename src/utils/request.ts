@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 16:11:59
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-01 23:51:00
+ * @LastEditTime: 2023-11-03 15:14:57
  * @Description:
  */
 type RequestOptions = {
@@ -15,7 +15,7 @@ type RequestOptions = {
 async function fetchWithTimeout(
   input: RequestInfo,
   init?: RequestInit,
-  timeout = 5000
+  timeout = 10000
 ): Promise<Response> {
   return Promise.race([
     fetch(input, init),
@@ -41,11 +41,15 @@ async function request<T>(
       },
       timeout
     );
+    // 尝试请求用户领取种子接口时，如果登录失效 500 404 403 或者重定向到 login 时，直接返回错误
     if (
-      response.status === 500 ||
-      response.status === 404 ||
-      response.status === 403
+      url.includes('user-seeding-torrent') &&
+      (response.status === 500 ||
+        response.status === 404 ||
+        response.status === 403 ||
+        response.url.includes('/login'))
     ) {
+      console.log(111);
       return Promise.reject(response);
     }
     if (url.includes('getusertorrentlistajax')) {
