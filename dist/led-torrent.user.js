@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         一键领种
-// @namespace    一键领种
+// @namespace    方便用户一键领种
 // @version      0.5
 // @author       waibuzheng
-// @description  一键领种
+// @description  努力支持多个站点一键领种
 // @icon         https://image.zmpt.cc/imgs/2023/11/5c60a64ce9d1104a.png
 // @match        http*://*/userdetails.php?id=*
 // @grant        GM_addStyle

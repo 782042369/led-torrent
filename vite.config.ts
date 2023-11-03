@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-03 14:45:13
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-03 14:58:44
+ * @LastEditTime: 2023-11-03 15:38:14
  * @Description:
  */
 import { resolve } from 'path';
@@ -16,22 +16,21 @@ export default defineConfig({
       entry: 'src/main.ts',
       userscript: {
         icon: 'https://image.zmpt.cc/imgs/2023/11/5c60a64ce9d1104a.png',
-        namespace: '一键领种',
-        match:'http*://*/userdetails.php?id=*',
+        namespace: '方便用户一键领种',
+        match: 'http*://*/userdetails.php?id=*',
         version: '0.5',
         name: '一键领种',
         author: 'waibuzheng',
-        description: '一键领种',
+        description: '努力支持多个站点一键领种'
       },
       build: {
-        externalGlobals: {
-        },
-      },
-    }),
+        externalGlobals: {}
+      }
+    })
   ],
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')
     }
-  },
+  }
 });
