@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         一键领种
 // @namespace    方便用户一键领种
-// @version      0.5
+// @version      0.6
 // @author       waibuzheng
 // @description  努力支持多个站点一键领种
 // @icon         https://image.zmpt.cc/imgs/2023/11/5c60a64ce9d1104a.png
@@ -89,113 +89,138 @@
       });
     });
   }
-  function animateButton(e) {
-    e.preventDefault;
-    if (e.target && e.target instanceof Element) {
-      const target = e.target;
-      target.classList.remove("animate");
-      target.classList.add("animate");
-      setTimeout(() => {
+  async function ledTorrentInit() {
+    function animateButton(e) {
+      e.preventDefault;
+      if (e.target && e.target instanceof Element) {
+        const target = e.target;
         target.classList.remove("animate");
-      }, 700);
-    }
-  }
-  async function getUserTorrent(page) {
-    try {
-      return await getNPHPUserTorrent({ page });
-    } catch (error) {
-      console.error("getUserTorrent error: ", error);
-      throw new Error("查询用户领种信息异常");
-    }
-  }
-  async function getUsertorrentlistajax(page, userid) {
-    try {
-      return await getNPHPUsertorrentlistajax({ page, userid });
-    } catch (error) {
-      console.error("getUsertorrentlistajax error: ", error);
-      throw new Error("查询用户领种信息异常");
-    }
-  }
-  async function handleLedTorrent(arr, button2) {
-    const json = {};
-    for (let i = 0; i < arr.length; i++) {
-      button2.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`;
-      let data = await getNPHPLedTorrent(arr[i].id);
-      if (!json[data.msg]) {
-        json[data.msg] = 0;
+        target.classList.add("animate");
+        setTimeout(() => {
+          target.classList.remove("animate");
+        }, 700);
       }
-      json[data.msg] += 1;
     }
-    return json;
-  }
-  let loading = false;
-  const button = document.createElement("button");
-  const ulbox = document.createElement("ul");
-  button.className = "bubbly-button";
-  const div = document.createElement("div");
-  div.className = "led-box";
-  button.addEventListener("click", async (e) => {
-    if (loading)
-      return;
-    loading = true;
-    button.innerText = "尝试多种方案请求中~~~";
-    const type = await getLedTorrentApiType();
-    button.innerText = "开始工作，为了网站和你自己的电脑速度调的很慢~~~";
-    const allData = [];
-    try {
-      animateButton(e);
-      let num = 1;
-      if (type === "api") {
-        const list = await getUserTorrent(num);
-        allData.push(...list.data || []);
-        while ((list == null ? void 0 : list.meta) && list.meta.total > allData.length) {
-          num++;
-          const moreList = await getUserTorrent(num);
-          if (moreList == null ? void 0 : moreList.data) {
-            allData.push(...moreList.data);
+    async function getUserTorrent(page) {
+      try {
+        return await getNPHPUserTorrent({ page });
+      } catch (error) {
+        console.error("getUserTorrent error: ", error);
+        throw new Error("查询用户领种信息异常");
+      }
+    }
+    async function getUsertorrentlistajax(page, userid) {
+      try {
+        return await getNPHPUsertorrentlistajax({ page, userid });
+      } catch (error) {
+        console.error("getUsertorrentlistajax error: ", error);
+        throw new Error("查询用户领种信息异常");
+      }
+    }
+    async function handleLedTorrent(arr, button2) {
+      const json = {};
+      for (let i = 0; i < arr.length; i++) {
+        button2.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`;
+        try {
+          let data = await getNPHPLedTorrent(arr[i].id);
+          const msg = data.msg || "领种接口返回信息错误";
+          if (!json[msg]) {
+            json[msg] = 0;
+          }
+          json[msg] += 1;
+        } catch (error) {
+          console.error("handleLedTorrent error: ", error);
+        }
+      }
+      return json;
+    }
+    function getLedMsg(msglist) {
+      let msgLi = "";
+      Object.keys(msglist).forEach((e) => {
+        msgLi += `<li>${e}: ${msglist[e]}</li>`;
+      });
+      return msgLi;
+    }
+    async function loadUserTorrents(userid, allData) {
+      let page = 0;
+      let hasMore = true;
+      const onePoolarr = /* @__PURE__ */ new Set();
+      do {
+        const list = await getUsertorrentlistajax(page, userid);
+        const regex = /data-torrent_id="(\d+)"/g;
+        let matches;
+        while ((matches = regex.exec(list)) !== null) {
+          if (!onePoolarr.has(matches[1])) {
+            allData.push({ id: matches[1] });
+            onePoolarr.add(matches[1]);
           }
         }
+        hasMore = regex.test(list);
+        page++;
+      } while (hasMore);
+    }
+    async function loadUserTorrentsApi(allData) {
+      let num = 1;
+      const list = await getUserTorrent(num);
+      allData.push(...list.data || []);
+      while ((list == null ? void 0 : list.meta) && list.meta.total > allData.length) {
+        num++;
+        const moreList = await getUserTorrent(num);
+        if (moreList == null ? void 0 : moreList.data) {
+          allData.push(...moreList.data);
+        }
+      }
+    }
+    async function loadTorrents(type) {
+      const allData = [];
+      if (type === "api") {
+        await loadUserTorrentsApi(allData);
       }
       if (type === "getusertorrentlistajax") {
         const userid = getvl("id");
-        const onePoolarr = [];
-        const fn = async (page) => {
-          const list = await getUsertorrentlistajax(page, userid);
-          const regex = /data-torrent_id="(\d+)"/g;
-          let matches;
-          while ((matches = regex.exec(list)) !== null) {
-            !onePoolarr.includes(matches[1]) && allData.push({
-              id: matches[1]
-            }), onePoolarr.push(matches[1]);
-          }
-          if (regex.exec(list) !== null) {
-            await fn(page + 1);
-          }
-        };
-        await fn(0);
+        await loadUserTorrents(userid, allData);
       }
-      if (!allData.length) {
-        button.innerText = "该站点可能不支持领种子。";
+      return allData;
+    }
+    let loading = false;
+    const button = document.createElement("button");
+    const ulbox = document.createElement("ul");
+    button.className = "bubbly-button";
+    const div = document.createElement("div");
+    div.className = "led-box";
+    async function onButtonClicked(e) {
+      if (loading) {
+        e.preventDefault();
         return;
       }
-      const msglist = await handleLedTorrent(allData, button);
-      console.log("msglist: ", msglist);
-      let msgLi = "";
-      Object.keys(msglist).forEach((e2) => {
-        msgLi += `<li>${e2}: ${msglist[e2]}</li>`;
-      });
-      button.innerText = "一键认领完毕，刷新查看。";
-      ulbox.innerHTML = msgLi;
-    } catch (error) {
-      console.error("Error: ", error);
-      button.innerText = error.message;
-    } finally {
-      loading = false;
+      loading = true;
+      button.disabled = true;
+      button.innerText = "尝试多种方案请求中~~~";
+      const type = await getLedTorrentApiType();
+      button.innerText = "开始工作，为了网站和你自己的电脑速度调的很慢~~~";
+      try {
+        animateButton(e);
+        const allData = await loadTorrents(type);
+        if (!allData.length) {
+          button.innerText = "该站点可能不支持领种子。";
+        }
+        const msglist = await handleLedTorrent(allData, button);
+        button.innerText = "一键认领完毕，刷新查看。";
+        ulbox.innerHTML = getLedMsg(msglist);
+      } catch (error) {
+        console.error("Error: ", error);
+        button.innerText = error.message;
+      } finally {
+        loading = false;
+        button.disabled = false;
+      }
     }
-  });
-  button.innerText = "一键认领";
-  div.appendChild(button);
-  div.appendChild(ulbox);
-  document.body.appendChild(div);
+    button.addEventListener("click", onButtonClicked);
+    button.innerText = "一键认领";
+    div.appendChild(button);
+    div.appendChild(ulbox);
+    document.body.appendChild(div);
+  }
+  ledTorrentInit();
 
 })();
