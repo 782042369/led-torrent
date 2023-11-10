@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 16:11:59
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-03 15:14:57
+ * @LastEditTime: 2023-11-10 13:07:32
  * @Description:
  */
 type RequestOptions = {
@@ -15,7 +15,7 @@ type RequestOptions = {
 async function fetchWithTimeout(
   input: RequestInfo,
   init?: RequestInit,
-  timeout = 10000
+  timeout = 100000
 ): Promise<Response> {
   return Promise.race([
     fetch(input, init),
