@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 16:11:59
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-10 13:07:32
+ * @LastEditTime: 2023-11-11 22:03:34
  * @Description:
  */
 type RequestOptions = {
@@ -49,10 +49,9 @@ async function request<T>(
         response.status === 403 ||
         response.url.includes('/login'))
     ) {
-      console.log(111);
       return Promise.reject(response);
     }
-    if (url.includes('getusertorrentlistajax')) {
+    if (url.includes('getusertorrentlistajax') || url.includes('claim.php')) {
       return (await response.text()) as T;
     }
     return await response.json();
