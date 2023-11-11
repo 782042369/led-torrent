@@ -233,12 +233,12 @@
         const ledlist = [];
         const msglist = {};
         await loadTorrents(ledlist);
-        ulbox.innerHTML = ulbox.innerHTML += `<li>获取所有在做种领取状态的数据一共${ledlist.length}个</li>`;
+        ulbox.innerHTML = ulbox.innerHTML += `<li>获取所有在做种且领取状态的数据一共${ledlist.length}个</li>`;
         const uid = getvl("uid");
         const allData = [];
         button.innerText = "获取所有领种的数据";
         await loadUserTorrentsHistory(uid, allData, ledlist);
-        ulbox.innerHTML += `<li>获取所有在没在做种领取状态的数据一共${allData.length}个</li>`;
+        ulbox.innerHTML += `<li>获取所有没在做种且领取状态的数据一共${allData.length}个</li>`;
         if (allData.length) {
           if (confirm(
             `目前有${allData.length}个可能不在做种状态，真的要放弃领种吗?`

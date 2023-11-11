@@ -211,12 +211,12 @@ if (location.href.includes('claim.php')) {
       // 获取所有做种数据
       await loadTorrents(ledlist);
       ulbox.innerHTML =
-        ulbox.innerHTML += `<li>获取所有在做种领取状态的数据一共${ledlist.length}个</li>`;
+        ulbox.innerHTML += `<li>获取所有在做种且领取状态的数据一共${ledlist.length}个</li>`;
       const uid = getvl('uid');
       const allData: torrentDataIdsType = [];
       button.innerText = '获取所有领种的数据';
       await loadUserTorrentsHistory(uid, allData, ledlist);
-      ulbox.innerHTML += `<li>获取所有在没在做种领取状态的数据一共${allData.length}个</li>`;
+      ulbox.innerHTML += `<li>获取所有没在做种且领取状态的数据一共${allData.length}个</li>`;
       if (allData.length) {
         if (
           confirm(
