@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 14:46:20
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-11 22:00:37
+ * @LastEditTime: 2023-11-12 16:01:25
  * @Description:
  */
 /*
@@ -18,23 +18,11 @@ import {
   getNPHPUsertorrentlistajax
 } from '@/utils/api';
 import '@/utils/led-torrent.scss';
-import { getvl } from './utils';
+import { animateButton, checkForNextPage, getLedMsg, getvl } from './utils';
 export type torrentDataIdsType = {
   id: string;
 }[];
 
-/** 按钮动画效果 */
-function animateButton(e: MouseEvent) {
-  e.preventDefault;
-  if (e.target && e.target instanceof Element) {
-    const target = e.target;
-    target.classList.remove('animate');
-    target.classList.add('animate');
-    setTimeout(() => {
-      target.classList.remove('animate');
-    }, 700);
-  }
-}
 /** 认领、放弃种子 */
 async function handleLedTorrent(
   arr: torrentDataIdsType,
@@ -53,13 +41,7 @@ async function handleLedTorrent(
     }
   }
 }
-function getLedMsg(msglist: Record<string, number>) {
-  let msgLi = '';
-  Object.keys(msglist).forEach((e) => {
-    msgLi += `<li>${e}: ${msglist[e]}</li>`;
-  });
-  return msgLi;
-}
+/** 查找历史做种且领种数据 */
 async function loadUserTorrents(
   userid: string,
   allData: torrentDataIdsType,
@@ -97,11 +79,14 @@ async function loadUserTorrents(
       }
     });
     page++;
-    const nextPageLinkSelector = `a[href*="getusertorrentlistajax.php?page=${page}"]`;
     // 在传入的文档中查找下一页链接
-    hasMore = Boolean(doc.querySelector(nextPageLinkSelector));
+    hasMore = checkForNextPage(
+      doc,
+      `a[href*="getusertorrentlistajax.php?page=${page}"]`
+    );
   } while (hasMore);
 }
+/** 查找历史领种数据 */
 async function loadUserTorrentsHistory(
   uid: string,
   allData: torrentDataIdsType,
@@ -123,7 +108,9 @@ async function loadUserTorrentsHistory(
         const {
           style: { display: display0 }
         } = buttons[0];
+        // 种子ID
         const torrent_id = buttons[1].getAttribute('data-torrent_id')!;
+        // 放弃领种ID
         const claim_id = buttons[1].getAttribute('data-claim_id')!;
 
         const { innerText: innerText1 } = buttons[1];
@@ -138,16 +125,9 @@ async function loadUserTorrentsHistory(
       }
     });
     page++;
-    const nextPageLinkSelector = `a[href*="?uid=${uid}&page=${page}"]`;
     // 在传入的文档中查找下一页链接
-    hasMore = Boolean(doc.querySelector(nextPageLinkSelector));
+    hasMore = checkForNextPage(doc, `a[href*="?uid=${uid}&page=${page}"]`);
   } while (hasMore);
-}
-async function loadTorrents(ledlist: string[]) {
-  const allData: torrentDataIdsType = [];
-  const userid = getvl('id') || getvl('uid');
-  await loadUserTorrents(userid, allData, ledlist);
-  return allData;
 }
 
 // 初始化
@@ -175,9 +155,9 @@ if (location.href.includes('userdetails.php')) {
       const ledlist: string[] = [];
       animateButton(e);
       // 获取所有做种数据
-      const allData: {
-        id: string;
-      }[] = await loadTorrents(ledlist);
+      const userid = getvl('id');
+      const allData: torrentDataIdsType = [];
+      await loadUserTorrents(userid, allData, ledlist);
       if (!allData.length) {
         button.innerText = '该站点可能不支持领种子。';
       }
@@ -203,16 +183,19 @@ if (location.href.includes('claim.php')) {
   button.innerText = '一键弃种';
   ulbox.innerHTML = `<li>放弃本人没在做种的种子</li>`;
   button.addEventListener('click', async (e) => {
+    if (loading) {
+      e.preventDefault();
+      return; // 防止重复点击
+    }
+    loading = true;
     if (confirm('真的要弃种吗?')) {
       button.innerText = '获取所有数据，请稍等。';
-      // 获取所有在做种领取状态的数据
-      const ledlist: string[] = [];
       const msglist: { [key in string]: number } = {};
-      // 获取所有做种数据
-      await loadTorrents(ledlist);
-      ulbox.innerHTML =
-        ulbox.innerHTML += `<li>获取所有在做种且领取状态的数据一共${ledlist.length}个</li>`;
+      // 获取所有做种领种数据
       const uid = getvl('uid');
+      const ledlist: string[] = [];
+      await loadUserTorrents(uid, [], ledlist);
+      ulbox.innerHTML += `<li>获取所有在做种且领取状态的数据一共${ledlist.length}个</li>`;
       const allData: torrentDataIdsType = [];
       button.innerText = '获取所有领种的数据';
       await loadUserTorrentsHistory(uid, allData, ledlist);
@@ -224,8 +207,12 @@ if (location.href.includes('claim.php')) {
           )
         ) {
           await handleLedTorrent(allData, button, msglist, 'removeClaim');
+        } else {
+          loading = false;
         }
       }
+    } else {
+      loading = false;
     }
   });
 }
