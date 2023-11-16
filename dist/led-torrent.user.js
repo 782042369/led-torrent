@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         一键领种、弃种
 // @namespace    方便用户一键领种、弃种
-// @version      0.8
+// @version      0.9
 // @author       waibuzheng
 // @description  努力支持多个站点一键领种、一键放弃本人没在做种的种子（慎用、测试可用）
 // @icon         https://image.zmpt.cc/imgs/2023/11/5c60a64ce9d1104a.png
@@ -80,6 +80,9 @@
       return unescape(RegExp.$2.replace(/\+/g, " "));
     return "";
   }
+  function checkForNextPage(doc, nextPageLinkSelector) {
+    return Boolean(doc.querySelector(nextPageLinkSelector));
+  }
   function animateButton(e) {
     e.preventDefault;
     if (e.target && e.target instanceof Element) {
@@ -90,6 +93,13 @@
         target.classList.remove("animate");
       }, 700);
     }
+  }
+  function getLedMsg(msglist) {
+    let msgLi = "";
+    Object.keys(msglist).forEach((e) => {
+      msgLi += `<li>${e}: ${msglist[e]}</li>`;
+    });
+    return msgLi;
   }
   async function handleLedTorrent(arr, button2, json, type) {
     for (let i = 0; i < arr.length; i++) {
@@ -102,13 +112,6 @@
         console.error("handleLedTorrent error: ", error);
       }
     }
-  }
-  function getLedMsg(msglist) {
-    let msgLi = "";
-    Object.keys(msglist).forEach((e) => {
-      msgLi += `<li>${e}: ${msglist[e]}</li>`;
-    });
-    return msgLi;
   }
   async function loadUserTorrents(userid, allData, ledlist) {
     let page = 0;
@@ -133,17 +136,19 @@
             innerText: innerText1,
             style: { display: display1 }
           } = buttons[1];
-          if (innerText0.includes("领") && display1 === "none" && torrent_id) {
+          if ((innerText0.includes("领") || innerText0.includes("領")) && display1 === "none" && torrent_id) {
             allData.push({ id: torrent_id });
           }
-          if (display0 === "none" && innerText1.includes("弃")) {
+          if (display0 === "none" && (innerText1.includes("弃") || innerText1.includes("棄"))) {
             ledlist.push(torrent_id);
           }
         }
       });
       page++;
-      const nextPageLinkSelector = `a[href*="getusertorrentlistajax.php?page=${page}"]`;
-      hasMore = Boolean(doc.querySelector(nextPageLinkSelector));
+      hasMore = checkForNextPage(
+        doc,
+        `a[href*="getusertorrentlistajax.php?page=${page}"]`
+      );
     } while (hasMore);
   }
   async function loadUserTorrentsHistory(uid, allData, ledlist) {
@@ -166,21 +171,14 @@
           const torrent_id = buttons[1].getAttribute("data-torrent_id");
           const claim_id = buttons[1].getAttribute("data-claim_id");
           const { innerText: innerText1 } = buttons[1];
-          if (display0 === "none" && innerText1.includes("弃") && !ledlist.includes(torrent_id)) {
+          if (display0 === "none" && (innerText1.includes("弃") || innerText1.includes("棄")) && !ledlist.includes(torrent_id)) {
             allData.push({ id: claim_id });
           }
         }
       });
       page++;
-      const nextPageLinkSelector = `a[href*="?uid=${uid}&page=${page}"]`;
-      hasMore = Boolean(doc.querySelector(nextPageLinkSelector));
+      hasMore = checkForNextPage(doc, `a[href*="?uid=${uid}&page=${page}"]`);
     } while (hasMore);
-  }
-  async function loadTorrents(ledlist) {
-    const allData = [];
-    const userid = getvl("id") || getvl("uid");
-    await loadUserTorrents(userid, allData, ledlist);
-    return allData;
   }
   let loading = false;
   const button = document.createElement("button");
@@ -204,7 +202,9 @@
         const msglist = {};
         const ledlist = [];
         animateButton(e);
-        const allData = await loadTorrents(ledlist);
+        const userid = getvl("id");
+        const allData = [];
+        await loadUserTorrents(userid, allData, ledlist);
         if (!allData.length) {
           button.innerText = "该站点可能不支持领种子。";
         }
@@ -228,13 +228,18 @@
     button.innerText = "一键弃种";
     ulbox.innerHTML = `<li>放弃本人没在做种的种子</li>`;
     button.addEventListener("click", async (e) => {
+      if (loading) {
+        e.preventDefault();
+        return;
+      }
+      loading = true;
       if (confirm("真的要弃种吗?")) {
         button.innerText = "获取所有数据，请稍等。";
-        const ledlist = [];
         const msglist = {};
-        await loadTorrents(ledlist);
-        ulbox.innerHTML = ulbox.innerHTML += `<li>获取所有在做种且领取状态的数据一共${ledlist.length}个</li>`;
         const uid = getvl("uid");
+        const ledlist = [];
+        await loadUserTorrents(uid, [], ledlist);
+        ulbox.innerHTML += `<li>获取所有在做种且领取状态的数据一共${ledlist.length}个</li>`;
         const allData = [];
         button.innerText = "获取所有领种的数据";
         await loadUserTorrentsHistory(uid, allData, ledlist);
@@ -244,8 +249,12 @@
             `目前有${allData.length}个可能不在做种状态，真的要放弃领种吗?`
           )) {
             await handleLedTorrent(allData, button, msglist, "removeClaim");
+          } else {
+            loading = false;
           }
         }
+      } else {
+        loading = false;
       }
     });
   }

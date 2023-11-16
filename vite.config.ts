@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-03 14:45:13
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-11 22:01:12
+ * @LastEditTime: 2023-11-16 21:31:46
  * @Description:
  */
 import { resolve } from 'path';
@@ -18,7 +18,7 @@ export default defineConfig({
         icon: 'https://image.zmpt.cc/imgs/2023/11/5c60a64ce9d1104a.png',
         namespace: '方便用户一键领种、弃种',
         match: ['http*://*/userdetails.php?id=*', 'http*://*/claim.php?uid=*'],
-        version: '0.8',
+        version: '0.9',
         name: '一键领种、弃种',
         author: 'waibuzheng',
         description:

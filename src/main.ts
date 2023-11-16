@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 14:46:20
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-12 16:01:25
+ * @LastEditTime: 2023-11-16 21:30:36
  * @Description:
  */
 /*
@@ -70,10 +70,17 @@ async function loadUserTorrents(
           style: { display: display1 }
         } = buttons[1];
         // 需要认领的种子
-        if (innerText0.includes('领') && display1 === 'none' && torrent_id) {
+        if (
+          (innerText0.includes('领') || innerText0.includes('領')) &&
+          display1 === 'none' &&
+          torrent_id
+        ) {
           allData.push({ id: torrent_id });
         }
-        if (display0 === 'none' && innerText1.includes('弃')) {
+        if (
+          display0 === 'none' &&
+          (innerText1.includes('弃') || innerText1.includes('棄'))
+        ) {
           ledlist.push(torrent_id);
         }
       }
@@ -117,7 +124,7 @@ async function loadUserTorrentsHistory(
         // 已经认领的种子 但是目前没有在做种的数据 代表可能删除了 所以 可以让用户判断是否删除该领种
         if (
           display0 === 'none' &&
-          innerText1.includes('弃') &&
+          (innerText1.includes('弃') || innerText1.includes('棄')) &&
           !ledlist.includes(torrent_id)
         ) {
           allData.push({ id: claim_id });
