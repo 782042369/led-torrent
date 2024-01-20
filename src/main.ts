@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 14:46:20
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2024-01-20 15:51:49
+ * @LastEditTime: 2024-01-20 20:49:34
  * @Description:
  */
 /*
@@ -280,7 +280,6 @@ async function handleLedPterTorrent(
 }
 // 猫站领取种子按钮
 if (location.href.includes('pterclub.com/getusertorrentlist.php')) {
-  console.log(111);
   button.innerText = '一键认领';
   button.addEventListener('click', async (e: MouseEvent) => {
     if (loading) {

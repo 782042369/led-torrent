@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 16:11:59
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2024-01-20 15:59:21
+ * @LastEditTime: 2024-01-20 20:49:26
  * @Description:
  */
 type RequestOptions = {
@@ -42,12 +42,10 @@ async function request<T>(
       timeout
     );
     if (url.includes('viewclaims.php')) {
-      console.log(response);
       try {
         await response.json();
         return Promise.resolve(true as T);
       } catch (error) {
-        console.log('error: ', error);
         return Promise.resolve(false as T);
       }
     }

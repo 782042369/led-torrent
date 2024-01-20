@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         一键领种、弃种
 // @namespace    方便用户一键领种、弃种
-// @version      1.0
+// @version      1.1
 // @author       waibuzheng
 // @description  努力支持多个站点一键领种、一键放弃本人没在做种的种子（慎用、测试可用）
-// @icon         https://lsky.waibuzheng.club:11111/i/2024/01/20/65ab8a7c6afb2.png
+// @icon         https://lsky.waibuzheng.club:11111/thumbnails/ac488953e605496b9b9bb3f3ee29f0ad.png
 // @match        http*://*/userdetails.php?id=*
 // @match        http*://*/claim.php?uid=*
 // @match        http*://pterclub.com/getusertorrentlist.php?*
@@ -37,12 +37,10 @@
         timeout
       );
       if (url.includes("viewclaims.php")) {
-        console.log(response);
         try {
           await response.json();
           return Promise.resolve(true);
         } catch (error) {
-          console.log("error: ", error);
           return Promise.resolve(false);
         }
       }
@@ -324,7 +322,6 @@
     }
   }
   if (location.href.includes("pterclub.com/getusertorrentlist.php")) {
-    console.log(111);
     button.innerText = "一键认领";
     button.addEventListener("click", async (e) => {
       if (loading) {
