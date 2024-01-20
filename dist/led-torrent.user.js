@@ -4,7 +4,7 @@
 // @version      1.0
 // @author       waibuzheng
 // @description  努力支持多个站点一键领种、一键放弃本人没在做种的种子（慎用、测试可用）
-// @icon         https://image.zmpt.cc/imgs/2023/11/5c60a64ce9d1104a.png
+// @icon         https://lsky.waibuzheng.club:11111/i/2024/01/20/65ab8a7c6afb2.png
 // @match        http*://*/userdetails.php?id=*
 // @match        http*://*/claim.php?uid=*
 // @match        http*://pterclub.com/getusertorrentlist.php?*

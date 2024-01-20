@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-03 14:45:13
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2024-01-20 16:01:46
+ * @LastEditTime: 2024-01-20 16:56:58
  * @Description:
  */
 import { resolve } from 'path';
@@ -15,7 +15,7 @@ export default defineConfig({
     monkey({
       entry: 'src/main.ts',
       userscript: {
-        icon: 'https://image.zmpt.cc/imgs/2023/11/5c60a64ce9d1104a.png',
+        icon: 'https://lsky.waibuzheng.club:11111/thumbnails/ac488953e605496b9b9bb3f3ee29f0ad.png',
         namespace: '方便用户一键领种、弃种',
         match: [
           'http*://*/userdetails.php?id=*',
