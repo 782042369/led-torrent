@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-03 14:45:13
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-16 21:31:46
+ * @LastEditTime: 2024-01-20 16:01:46
  * @Description:
  */
 import { resolve } from 'path';
@@ -17,8 +17,12 @@ export default defineConfig({
       userscript: {
         icon: 'https://image.zmpt.cc/imgs/2023/11/5c60a64ce9d1104a.png',
         namespace: '方便用户一键领种、弃种',
-        match: ['http*://*/userdetails.php?id=*', 'http*://*/claim.php?uid=*'],
-        version: '0.9',
+        match: [
+          'http*://*/userdetails.php?id=*',
+          'http*://*/claim.php?uid=*',
+          'http*://pterclub.com/getusertorrentlist.php?*'
+        ],
+        version: '1.0',
         name: '一键领种、弃种',
         author: 'waibuzheng',
         description:

@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         一键领种、弃种
 // @namespace    方便用户一键领种、弃种
-// @version      0.9
+// @version      1.0
 // @author       waibuzheng
 // @description  努力支持多个站点一键领种、一键放弃本人没在做种的种子（慎用、测试可用）
 // @icon         https://image.zmpt.cc/imgs/2023/11/5c60a64ce9d1104a.png
 // @match        http*://*/userdetails.php?id=*
 // @match        http*://*/claim.php?uid=*
+// @match        http*://pterclub.com/getusertorrentlist.php?*
 // @grant        GM_addStyle
 // ==/UserScript==
 
@@ -35,10 +36,20 @@
         },
         timeout
       );
+      if (url.includes("viewclaims.php")) {
+        console.log(response);
+        try {
+          await response.json();
+          return Promise.resolve(true);
+        } catch (error) {
+          console.log("error: ", error);
+          return Promise.resolve(false);
+        }
+      }
       if (url.includes("user-seeding-torrent") && (response.status === 500 || response.status === 404 || response.status === 403 || response.url.includes("/login"))) {
         return Promise.reject(response);
       }
-      if (url.includes("getusertorrentlistajax") || url.includes("claim.php")) {
+      if (url.includes("getusertorrentlistajax") || url.includes("claim.php") || url.includes("getusertorrentlist.php")) {
         return await response.text();
       }
       return await response.json();
@@ -74,6 +85,21 @@
       method: "GET"
     });
   };
+  const getNPHPPterUsertorrentlistajax = async (params) => {
+    return request(
+      `getusertorrentlist.php?page=${params.page}&userid=${params.userid}&type=seeding`,
+      {
+        method: "GET"
+      }
+    );
+  };
+  const getNPHPPterLedTorrent = (id) => {
+    const body = new FormData();
+    return request(id, {
+      method: "POST",
+      body
+    });
+  };
   function getvl(name) {
     var reg = new RegExp("(^|\\?|&)" + name + "=([^&]*)(\\s|&|$)", "i");
     if (reg.test(location.href))
@@ -106,7 +132,7 @@
       button2.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`;
       try {
         let data = await getNPHPLedTorrent(arr[i].id, type);
-        const msg = data.msg || "领种接口返回信息错误";
+        const msg = data.msg || "领种接口返回信息异常";
         json[msg] = (json[msg] || 0) + 1;
       } catch (error) {
         console.error("handleLedTorrent error: ", error);
@@ -188,7 +214,7 @@
   div.className = "led-box";
   div.appendChild(button);
   div.appendChild(ulbox);
-  if (location.href.includes("userdetails.php")) {
+  if (location.href.includes("userdetails.php") && !location.href.includes("pterclub")) {
     button.innerText = "一键认领";
     button.addEventListener("click", async (e) => {
       if (loading) {
@@ -255,6 +281,82 @@
         }
       } else {
         loading = false;
+      }
+    });
+  }
+  async function loadPterUserTorrents(userid, allData, ledlist) {
+    let page = 0;
+    let hasMore = true;
+    do {
+      const details = await getNPHPPterUsertorrentlistajax({
+        page,
+        userid
+      });
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(details, "text/html");
+      const claimDoms = doc.querySelectorAll(".claim-confirm");
+      const removeDoms = doc.querySelectorAll(".remove-confirm");
+      claimDoms.forEach((v) => {
+        allData.push({
+          id: v.getAttribute("data-url") || ""
+        });
+      });
+      removeDoms.forEach((v) => {
+        ledlist.push(v.getAttribute("data-url") || "");
+      });
+      page++;
+      hasMore = checkForNextPage(
+        doc,
+        `a[href*="?userid=${userid}&type=seeding&page=${page}"]`
+      );
+    } while (hasMore);
+  }
+  async function handleLedPterTorrent(arr, button2, json) {
+    for (let i = 0; i < arr.length; i++) {
+      button2.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`;
+      try {
+        let data = await getNPHPPterLedTorrent(arr[i].id);
+        const msg = data ? "领取成功" : "领取失败";
+        json[msg] = (json[msg] || 0) + 1;
+      } catch (error) {
+        console.error("handleLedTorrent error: ", error);
+      }
+    }
+  }
+  if (location.href.includes("pterclub.com/getusertorrentlist.php")) {
+    console.log(111);
+    button.innerText = "一键认领";
+    button.addEventListener("click", async (e) => {
+      if (loading) {
+        e.preventDefault();
+        return;
+      }
+      loading = true;
+      button.disabled = true;
+      button.innerText = "开始工作，为了网站和你自己的电脑速度调的很慢~~~";
+      try {
+        const msglist = {};
+        const ledlist = [];
+        const userid = getvl("userid");
+        const allData = [];
+        animateButton(e);
+        await loadPterUserTorrents(userid, allData, ledlist);
+        if (!allData.length) {
+          button.innerText = "该站点可能不支持领种子。";
+        }
+        if (ledlist.length > 0) {
+          msglist["已经认领过"] = ledlist.length;
+        }
+        ulbox.innerHTML = getLedMsg(msglist);
+        await handleLedPterTorrent(allData, button, msglist);
+        button.innerText = "一键认领完毕，刷新查看。";
+        ulbox.innerHTML = getLedMsg(msglist);
+      } catch (error) {
+        console.error("Error: ", error);
+        button.innerText = error.message;
+      } finally {
+        loading = false;
+        button.disabled = false;
       }
     });
   }
