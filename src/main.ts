@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 14:46:20
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-16 21:30:36
+ * @LastEditTime: 2024-01-20 15:51:49
  * @Description:
  */
 /*
@@ -14,6 +14,8 @@
  */
 import {
   getNPHPLedTorrent,
+  getNPHPPterLedTorrent,
+  getNPHPPterUsertorrentlistajax,
   getNPHPUsertorrentHistory,
   getNPHPUsertorrentlistajax
 } from '@/utils/api';
@@ -34,7 +36,7 @@ async function handleLedTorrent(
     button.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`;
     try {
       let data = await getNPHPLedTorrent(arr[i].id, type);
-      const msg = data.msg || '领种接口返回信息错误';
+      const msg = data.msg || '领种接口返回信息异常';
       json[msg] = (json[msg] || 0) + 1;
     } catch (error) {
       console.error('handleLedTorrent error: ', error);
@@ -147,7 +149,10 @@ div.className = 'led-box';
 
 div.appendChild(button);
 div.appendChild(ulbox);
-if (location.href.includes('userdetails.php')) {
+if (
+  location.href.includes('userdetails.php') &&
+  !location.href.includes('pterclub')
+) {
   button.innerText = '一键认领';
   button.addEventListener('click', async (e: MouseEvent) => {
     if (loading) {
@@ -220,6 +225,96 @@ if (location.href.includes('claim.php')) {
       }
     } else {
       loading = false;
+    }
+  });
+}
+/** 查找猫站历史做种且领种数据 */
+async function loadPterUserTorrents(
+  userid: string,
+  allData: torrentDataIdsType,
+  ledlist: string[]
+) {
+  let page = 0;
+  let hasMore = true;
+  do {
+    const details = await getNPHPPterUsertorrentlistajax({
+      page,
+      userid
+    });
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(details, 'text/html');
+    const claimDoms = doc.querySelectorAll('.claim-confirm');
+    const removeDoms = doc.querySelectorAll('.remove-confirm');
+    claimDoms.forEach((v) => {
+      allData.push({
+        id: v.getAttribute('data-url') || ''
+      });
+    });
+    removeDoms.forEach((v) => {
+      ledlist.push(v.getAttribute('data-url') || '');
+    });
+    page++;
+    // 在传入的文档中查找下一页链接
+    hasMore = checkForNextPage(
+      doc,
+      `a[href*="?userid=${userid}&type=seeding&page=${page}"]`
+    );
+  } while (hasMore);
+}
+// 猫站认领种子接口
+async function handleLedPterTorrent(
+  arr: torrentDataIdsType,
+  button: HTMLButtonElement,
+  json: { [key in string]: number }
+) {
+  for (let i = 0; i < arr.length; i++) {
+    button.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`;
+    try {
+      let data = await getNPHPPterLedTorrent(arr[i].id);
+      const msg = data ? '领取成功' : '领取失败';
+      json[msg] = (json[msg] || 0) + 1;
+    } catch (error) {
+      console.error('handleLedTorrent error: ', error);
+    }
+  }
+}
+// 猫站领取种子按钮
+if (location.href.includes('pterclub.com/getusertorrentlist.php')) {
+  console.log(111);
+  button.innerText = '一键认领';
+  button.addEventListener('click', async (e: MouseEvent) => {
+    if (loading) {
+      e.preventDefault();
+      return; // 防止重复点击
+    }
+    loading = true;
+    button.disabled = true; // 禁用按钮以防重复点击
+    button.innerText = '开始工作，为了网站和你自己的电脑速度调的很慢~~~';
+    try {
+      const msglist: { [key in string]: number } = {};
+      const ledlist: string[] = [];
+      const userid = getvl('userid');
+      const allData: torrentDataIdsType = [];
+      animateButton(e);
+      // 获取所有做种数据
+      await loadPterUserTorrents(userid, allData, ledlist);
+      if (!allData.length) {
+        button.innerText = '该站点可能不支持领种子。';
+      }
+      if (ledlist.length > 0) {
+        msglist['已经认领过'] = ledlist.length;
+      }
+      ulbox.innerHTML = getLedMsg(msglist);
+      // 开始领种 返回领种结果
+      await handleLedPterTorrent(allData, button, msglist);
+      button.innerText = '一键认领完毕，刷新查看。';
+      ulbox.innerHTML = getLedMsg(msglist);
+    } catch (error: any) {
+      console.error('Error: ', error);
+      button.innerText = error.message;
+    } finally {
+      loading = false;
+      button.disabled = false;
     }
   });
 }

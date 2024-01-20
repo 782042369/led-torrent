@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 16:11:59
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-11 22:03:34
+ * @LastEditTime: 2024-01-20 15:59:21
  * @Description:
  */
 type RequestOptions = {
@@ -41,6 +41,16 @@ async function request<T>(
       },
       timeout
     );
+    if (url.includes('viewclaims.php')) {
+      console.log(response);
+      try {
+        await response.json();
+        return Promise.resolve(true as T);
+      } catch (error) {
+        console.log('error: ', error);
+        return Promise.resolve(false as T);
+      }
+    }
     // 尝试请求用户领取种子接口时，如果登录失效 500 404 403 或者重定向到 login 时，直接返回错误
     if (
       url.includes('user-seeding-torrent') &&
@@ -51,7 +61,11 @@ async function request<T>(
     ) {
       return Promise.reject(response);
     }
-    if (url.includes('getusertorrentlistajax') || url.includes('claim.php')) {
+    if (
+      url.includes('getusertorrentlistajax') ||
+      url.includes('claim.php') ||
+      url.includes('getusertorrentlist.php')
+    ) {
       return (await response.text()) as T;
     }
     return await response.json();

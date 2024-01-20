@@ -49,3 +49,23 @@ export const getNPHPUsertorrentHistory = async (params: {
     method: 'GET'
   });
 };
+
+export const getNPHPPterUsertorrentlistajax = async (params: {
+  page: number;
+  userid: string;
+}) => {
+  return request<string>(
+    `getusertorrentlist.php?page=${params.page}&userid=${params.userid}&type=seeding`,
+    {
+      method: 'GET'
+    }
+  );
+};
+export const getNPHPPterLedTorrent = (id: string) => {
+  const body = new FormData();
+
+  return request<Boolean>(id, {
+    method: 'POST',
+    body
+  });
+};
