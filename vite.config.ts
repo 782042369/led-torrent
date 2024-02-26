@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-03 14:45:13
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2024-01-20 20:50:01
+ * @LastEditTime: 2024-02-20 11:38:22
  * @Description:
  */
 import { resolve } from 'path';
@@ -22,7 +22,7 @@ export default defineConfig({
           'http*://*/claim.php?uid=*',
           'http*://pterclub.com/getusertorrentlist.php?*'
         ],
-        version: '1.1',
+        version: '1.2',
         name: '一键领种、弃种',
         author: 'waibuzheng',
         description:

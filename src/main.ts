@@ -2,14 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 14:46:20
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2024-01-20 20:49:34
- * @Description:
- */
-/*
- * @Author: yanghongxuan
- * @Date: 2023-11-01 12:48:49
- * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-01 15:56:10
+ * @LastEditTime: 2024-02-20 11:38:00
  * @Description:
  */
 import {
@@ -21,9 +14,7 @@ import {
 } from '@/utils/api';
 import '@/utils/led-torrent.scss';
 import { animateButton, checkForNextPage, getLedMsg, getvl } from './utils';
-export type torrentDataIdsType = {
-  id: string;
-}[];
+export type torrentDataIdsType = string[];
 
 /** 认领、放弃种子 */
 async function handleLedTorrent(
@@ -35,8 +26,8 @@ async function handleLedTorrent(
   for (let i = 0; i < arr.length; i++) {
     button.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`;
     try {
-      let data = await getNPHPLedTorrent(arr[i].id, type);
-      const msg = data.msg || '领种接口返回信息异常';
+      let data = await getNPHPLedTorrent(arr[i], type);
+      const msg = data.msg || '领种接口返回信息错误';
       json[msg] = (json[msg] || 0) + 1;
     } catch (error) {
       console.error('handleLedTorrent error: ', error);
@@ -75,13 +66,15 @@ async function loadUserTorrents(
         if (
           (innerText0.includes('领') || innerText0.includes('領')) &&
           display1 === 'none' &&
-          torrent_id
+          torrent_id &&
+          !allData.includes(torrent_id)
         ) {
-          allData.push({ id: torrent_id });
+          allData.push(torrent_id);
         }
         if (
           display0 === 'none' &&
-          (innerText1.includes('弃') || innerText1.includes('棄'))
+          (innerText1.includes('弃') || innerText1.includes('棄')) &&
+          !ledlist.includes(torrent_id)
         ) {
           ledlist.push(torrent_id);
         }
@@ -127,9 +120,10 @@ async function loadUserTorrentsHistory(
         if (
           display0 === 'none' &&
           (innerText1.includes('弃') || innerText1.includes('棄')) &&
-          !ledlist.includes(torrent_id)
+          !ledlist.includes(torrent_id) &&
+          !allData.includes(claim_id)
         ) {
-          allData.push({ id: claim_id });
+          allData.push(claim_id);
         }
       }
     });
@@ -246,12 +240,16 @@ async function loadPterUserTorrents(
     const claimDoms = doc.querySelectorAll('.claim-confirm');
     const removeDoms = doc.querySelectorAll('.remove-confirm');
     claimDoms.forEach((v) => {
-      allData.push({
-        id: v.getAttribute('data-url') || ''
-      });
+      const id = v.getAttribute('data-url') || '';
+      if (!allData.includes(id)) {
+        allData.push(id);
+      }
     });
     removeDoms.forEach((v) => {
-      ledlist.push(v.getAttribute('data-url') || '');
+      const id = v.getAttribute('data-url') || '';
+      if (!ledlist.includes(id)) {
+        ledlist.push(id);
+      }
     });
     page++;
     // 在传入的文档中查找下一页链接
@@ -270,7 +268,7 @@ async function handleLedPterTorrent(
   for (let i = 0; i < arr.length; i++) {
     button.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`;
     try {
-      let data = await getNPHPPterLedTorrent(arr[i].id);
+      let data = await getNPHPPterLedTorrent(arr[i]);
       const msg = data ? '领取成功' : '领取失败';
       json[msg] = (json[msg] || 0) + 1;
     } catch (error) {

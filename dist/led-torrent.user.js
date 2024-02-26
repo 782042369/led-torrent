@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         一键领种、弃种
 // @namespace    方便用户一键领种、弃种
-// @version      1.1
+// @version      1.2
 // @author       waibuzheng
 // @description  努力支持多个站点一键领种、一键放弃本人没在做种的种子（慎用、测试可用）
 // @icon         https://lsky.waibuzheng.club:11111/thumbnails/ac488953e605496b9b9bb3f3ee29f0ad.png
@@ -129,8 +129,8 @@
     for (let i = 0; i < arr.length; i++) {
       button2.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`;
       try {
-        let data = await getNPHPLedTorrent(arr[i].id, type);
-        const msg = data.msg || "领种接口返回信息异常";
+        let data = await getNPHPLedTorrent(arr[i], type);
+        const msg = data.msg || "领种接口返回信息错误";
         json[msg] = (json[msg] || 0) + 1;
       } catch (error) {
         console.error("handleLedTorrent error: ", error);
@@ -160,10 +160,10 @@
             innerText: innerText1,
             style: { display: display1 }
           } = buttons[1];
-          if ((innerText0.includes("领") || innerText0.includes("領")) && display1 === "none" && torrent_id) {
-            allData.push({ id: torrent_id });
+          if ((innerText0.includes("领") || innerText0.includes("領")) && display1 === "none" && torrent_id && !allData.includes(torrent_id)) {
+            allData.push(torrent_id);
           }
-          if (display0 === "none" && (innerText1.includes("弃") || innerText1.includes("棄"))) {
+          if (display0 === "none" && (innerText1.includes("弃") || innerText1.includes("棄")) && !ledlist.includes(torrent_id)) {
             ledlist.push(torrent_id);
           }
         }
@@ -195,8 +195,8 @@
           const torrent_id = buttons[1].getAttribute("data-torrent_id");
           const claim_id = buttons[1].getAttribute("data-claim_id");
           const { innerText: innerText1 } = buttons[1];
-          if (display0 === "none" && (innerText1.includes("弃") || innerText1.includes("棄")) && !ledlist.includes(torrent_id)) {
-            allData.push({ id: claim_id });
+          if (display0 === "none" && (innerText1.includes("弃") || innerText1.includes("棄")) && !ledlist.includes(torrent_id) && !allData.includes(claim_id)) {
+            allData.push(claim_id);
           }
         }
       });
@@ -295,12 +295,16 @@
       const claimDoms = doc.querySelectorAll(".claim-confirm");
       const removeDoms = doc.querySelectorAll(".remove-confirm");
       claimDoms.forEach((v) => {
-        allData.push({
-          id: v.getAttribute("data-url") || ""
-        });
+        const id = v.getAttribute("data-url") || "";
+        if (!allData.includes(id)) {
+          allData.push(id);
+        }
       });
       removeDoms.forEach((v) => {
-        ledlist.push(v.getAttribute("data-url") || "");
+        const id = v.getAttribute("data-url") || "";
+        if (!ledlist.includes(id)) {
+          ledlist.push(id);
+        }
       });
       page++;
       hasMore = checkForNextPage(
@@ -313,7 +317,7 @@
     for (let i = 0; i < arr.length; i++) {
       button2.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`;
       try {
-        let data = await getNPHPPterLedTorrent(arr[i].id);
+        let data = await getNPHPPterLedTorrent(arr[i]);
         const msg = data ? "领取成功" : "领取失败";
         json[msg] = (json[msg] || 0) + 1;
       } catch (error) {
