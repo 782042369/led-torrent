@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 12:15:00
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-11 21:31:01
+ * @LastEditTime: 2024-03-27 10:49:01
  * @Description:
  */
 
@@ -65,6 +65,17 @@ export const getNPHPPterLedTorrent = (id: string) => {
   const body = new FormData();
 
   return request<Boolean>(id, {
+    method: 'POST',
+    body
+  });
+};
+
+/** 认领种子 */
+export const getSSDLedTorrent = (id: string) => {
+  const body = new FormData();
+  body.append('action', 'add');
+  body.append('id', id + '');
+  return request<PTAPI.LedTorrentDetails>(`/adopt.php`, {
     method: 'POST',
     body
   });

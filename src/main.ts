@@ -2,135 +2,48 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 14:46:20
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2024-02-20 11:38:00
+ * @LastEditTime: 2024-03-27 10:55:45
  * @Description:
  */
-import {
-  getNPHPLedTorrent,
-  getNPHPPterLedTorrent,
-  getNPHPPterUsertorrentlistajax,
-  getNPHPUsertorrentHistory,
-  getNPHPUsertorrentlistajax
-} from '@/utils/api';
 import '@/utils/led-torrent.scss';
-import { animateButton, checkForNextPage, getLedMsg, getvl } from './utils';
+import {
+  handleLedTorrent,
+  loadUserTorrents,
+  loadUserTorrentsHistory
+} from './allIndex';
+import { handleLedPterTorrent, loadPterUserTorrents } from './pter';
+import {
+  handleLedSpringsundayTorrent,
+  loadSpringsundayUserTorrents
+} from './springsunday';
+import { animateButton, getLedMsg, getvl } from './utils';
 export type torrentDataIdsType = string[];
 
-/** 认领、放弃种子 */
-async function handleLedTorrent(
-  arr: torrentDataIdsType,
+// 优化事件监听器的设置
+function setupButtonListener(
   button: HTMLButtonElement,
-  json: { [key in string]: number },
-  type: 'removeClaim' | 'addClaim'
+  action: () => Promise<void>
 ) {
-  for (let i = 0; i < arr.length; i++) {
-    button.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`;
-    try {
-      let data = await getNPHPLedTorrent(arr[i], type);
-      const msg = data.msg || '领种接口返回信息错误';
-      json[msg] = (json[msg] || 0) + 1;
-    } catch (error) {
-      console.error('handleLedTorrent error: ', error);
+  button.addEventListener('click', async (e: MouseEvent) => {
+    if (loading) {
+      e.preventDefault();
+      return;
     }
-  }
-}
-/** 查找历史做种且领种数据 */
-async function loadUserTorrents(
-  userid: string,
-  allData: torrentDataIdsType,
-  ledlist: string[]
-) {
-  let page = 0;
-  let hasMore = true;
-  do {
-    const details = await getNPHPUsertorrentlistajax({
-      page,
-      userid
-    });
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(details, 'text/html');
-    const tdList = doc.querySelectorAll('td');
-    tdList.forEach((v) => {
-      const buttons = v.querySelectorAll('button');
-      if (buttons.length > 0) {
-        const {
-          innerText: innerText0,
-          style: { display: display0 }
-        } = buttons[0];
-        const torrent_id = buttons[0].getAttribute('data-torrent_id')!;
-        const {
-          innerText: innerText1,
-          style: { display: display1 }
-        } = buttons[1];
-        // 需要认领的种子
-        if (
-          (innerText0.includes('领') || innerText0.includes('領')) &&
-          display1 === 'none' &&
-          torrent_id &&
-          !allData.includes(torrent_id)
-        ) {
-          allData.push(torrent_id);
-        }
-        if (
-          display0 === 'none' &&
-          (innerText1.includes('弃') || innerText1.includes('棄')) &&
-          !ledlist.includes(torrent_id)
-        ) {
-          ledlist.push(torrent_id);
-        }
-      }
-    });
-    page++;
-    // 在传入的文档中查找下一页链接
-    hasMore = checkForNextPage(
-      doc,
-      `a[href*="getusertorrentlistajax.php?page=${page}"]`
-    );
-  } while (hasMore);
-}
-/** 查找历史领种数据 */
-async function loadUserTorrentsHistory(
-  uid: string,
-  allData: torrentDataIdsType,
-  ledlist: string[]
-) {
-  let page = 0;
-  let hasMore = true;
-  do {
-    const details = await getNPHPUsertorrentHistory({
-      page,
-      uid
-    });
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(details, 'text/html');
-    const tdList = doc.querySelectorAll('#claim-table td');
-    tdList.forEach((v) => {
-      const buttons = v.querySelectorAll('button');
-      if (buttons.length > 0) {
-        const {
-          style: { display: display0 }
-        } = buttons[0];
-        // 种子ID
-        const torrent_id = buttons[1].getAttribute('data-torrent_id')!;
-        // 放弃领种ID
-        const claim_id = buttons[1].getAttribute('data-claim_id')!;
+    loading = true;
+    animateButton(e);
+    button.disabled = true;
+    button.innerText = '开始工作，为了网站和你自己的电脑速度调的很慢~~~';
 
-        const { innerText: innerText1 } = buttons[1];
-        // 已经认领的种子 但是目前没有在做种的数据 代表可能删除了 所以 可以让用户判断是否删除该领种
-        if (
-          display0 === 'none' &&
-          (innerText1.includes('弃') || innerText1.includes('棄')) &&
-          !ledlist.includes(torrent_id) &&
-          !allData.includes(claim_id)
-        ) {
-          allData.push(claim_id);
-        }
-      }
-    });
-    page++;
-    // 在传入的文档中查找下一页链接
-    hasMore = checkForNextPage(doc, `a[href*="?uid=${uid}&page=${page}"]`);
-  } while (hasMore);
+    try {
+      await action();
+    } catch (error: any) {
+      console.error('Error: ', error);
+      button.innerText = error.message;
+    } finally {
+      loading = false;
+      button.disabled = false;
+    }
+  });
 }
 
 // 初始化
@@ -143,57 +56,12 @@ div.className = 'led-box';
 
 div.appendChild(button);
 div.appendChild(ulbox);
-if (
-  location.href.includes('userdetails.php') &&
-  !location.href.includes('pterclub')
-) {
-  button.innerText = '一键认领';
-  button.addEventListener('click', async (e: MouseEvent) => {
-    if (loading) {
-      e.preventDefault();
-      return; // 防止重复点击
-    }
-    loading = true;
-    button.disabled = true; // 禁用按钮以防重复点击
-    button.innerText = '开始工作，为了网站和你自己的电脑速度调的很慢~~~';
-    try {
-      const msglist: { [key in string]: number } = {};
-      const ledlist: string[] = [];
-      animateButton(e);
-      // 获取所有做种数据
-      const userid = getvl('id');
-      const allData: torrentDataIdsType = [];
-      await loadUserTorrents(userid, allData, ledlist);
-      if (!allData.length) {
-        button.innerText = '该站点可能不支持领种子。';
-      }
-      if (ledlist.length > 0) {
-        msglist['已经认领过'] = ledlist.length;
-      }
-      ulbox.innerHTML = getLedMsg(msglist);
-      // 开始领种 返回领种结果
-      await handleLedTorrent(allData, button, msglist, 'addClaim');
-      button.innerText = '一键认领完毕，刷新查看。';
-      ulbox.innerHTML = getLedMsg(msglist);
-    } catch (error: any) {
-      console.error('Error: ', error);
-      button.innerText = error.message;
-    } finally {
-      loading = false;
-      button.disabled = false;
-    }
-  });
-}
 
 if (location.href.includes('claim.php')) {
   button.innerText = '一键弃种';
   ulbox.innerHTML = `<li>放弃本人没在做种的种子</li>`;
-  button.addEventListener('click', async (e) => {
-    if (loading) {
-      e.preventDefault();
-      return; // 防止重复点击
-    }
-    loading = true;
+
+  setupButtonListener(button, async () => {
     if (confirm('真的要弃种吗?')) {
       button.innerText = '获取所有数据，请稍等。';
       const msglist: { [key in string]: number } = {};
@@ -222,97 +90,79 @@ if (location.href.includes('claim.php')) {
     }
   });
 }
-/** 查找猫站历史做种且领种数据 */
-async function loadPterUserTorrents(
-  userid: string,
-  allData: torrentDataIdsType,
-  ledlist: string[]
-) {
-  let page = 0;
-  let hasMore = true;
-  do {
-    const details = await getNPHPPterUsertorrentlistajax({
-      page,
-      userid
-    });
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(details, 'text/html');
-    const claimDoms = doc.querySelectorAll('.claim-confirm');
-    const removeDoms = doc.querySelectorAll('.remove-confirm');
-    claimDoms.forEach((v) => {
-      const id = v.getAttribute('data-url') || '';
-      if (!allData.includes(id)) {
-        allData.push(id);
-      }
-    });
-    removeDoms.forEach((v) => {
-      const id = v.getAttribute('data-url') || '';
-      if (!ledlist.includes(id)) {
-        ledlist.push(id);
-      }
-    });
-    page++;
-    // 在传入的文档中查找下一页链接
-    hasMore = checkForNextPage(
-      doc,
-      `a[href*="?userid=${userid}&type=seeding&page=${page}"]`
-    );
-  } while (hasMore);
-}
-// 猫站认领种子接口
-async function handleLedPterTorrent(
-  arr: torrentDataIdsType,
+
+// 定义一些通用的函数来处理重复的逻辑
+
+async function handleTorrentsActions(
   button: HTMLButtonElement,
-  json: { [key in string]: number }
+  ulbox: HTMLElement,
+  userId: string,
+  action: 'claim' | 'abandon' | 'claimPter' | 'claimSpring'
 ) {
-  for (let i = 0; i < arr.length; i++) {
-    button.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`;
-    try {
-      let data = await getNPHPPterLedTorrent(arr[i]);
-      const msg = data ? '领取成功' : '领取失败';
-      json[msg] = (json[msg] || 0) + 1;
-    } catch (error) {
-      console.error('handleLedTorrent error: ', error);
-    }
+  const msglist: { [key in string]: number } = {};
+  const ledlist: string[] = [];
+  const allData: torrentDataIdsType = [];
+
+  // 根据不同的操作调用不同的函数获取种子数据
+  if (action === 'claim' || action === 'abandon') {
+    await loadUserTorrents(userId, allData, ledlist);
+  } else if (action === 'claimPter') {
+    await loadPterUserTorrents(userId, allData, ledlist);
+  } else if (action === 'claimSpring') {
+    await loadSpringsundayUserTorrents(userId, allData, ledlist);
   }
+
+  if (!allData.length) {
+    button.innerText = `该站点可能不支持领种子。`;
+  }
+
+  if (ledlist.length > 0) {
+    msglist['已经认领过'] = ledlist.length;
+  }
+  ulbox.innerHTML = getLedMsg(msglist);
+
+  // 根据操作执行相应的处理
+  if (action === 'claim' || action === 'abandon') {
+    await handleLedTorrent(
+      allData,
+      button,
+      msglist,
+      action === 'claim' ? 'addClaim' : 'removeClaim'
+    );
+  } else if (action === 'claimPter') {
+    await handleLedPterTorrent(allData, button, msglist);
+  } else if (action === 'claimSpring') {
+    await handleLedSpringsundayTorrent(allData, button, msglist);
+  }
+
+  button.innerText = `一键操作完毕，刷新查看。`;
+  ulbox.innerHTML = getLedMsg(msglist);
 }
-// 猫站领取种子按钮
 if (location.href.includes('pterclub.com/getusertorrentlist.php')) {
+  // 猫站领取种子按钮
   button.innerText = '一键认领';
-  button.addEventListener('click', async (e: MouseEvent) => {
-    if (loading) {
-      e.preventDefault();
-      return; // 防止重复点击
-    }
-    loading = true;
-    button.disabled = true; // 禁用按钮以防重复点击
-    button.innerText = '开始工作，为了网站和你自己的电脑速度调的很慢~~~';
-    try {
-      const msglist: { [key in string]: number } = {};
-      const ledlist: string[] = [];
-      const userid = getvl('userid');
-      const allData: torrentDataIdsType = [];
-      animateButton(e);
-      // 获取所有做种数据
-      await loadPterUserTorrents(userid, allData, ledlist);
-      if (!allData.length) {
-        button.innerText = '该站点可能不支持领种子。';
-      }
-      if (ledlist.length > 0) {
-        msglist['已经认领过'] = ledlist.length;
-      }
-      ulbox.innerHTML = getLedMsg(msglist);
-      // 开始领种 返回领种结果
-      await handleLedPterTorrent(allData, button, msglist);
-      button.innerText = '一键认领完毕，刷新查看。';
-      ulbox.innerHTML = getLedMsg(msglist);
-    } catch (error: any) {
-      console.error('Error: ', error);
-      button.innerText = error.message;
-    } finally {
-      loading = false;
-      button.disabled = false;
-    }
-  });
+  setupButtonListener(button, () =>
+    handleTorrentsActions(button, ulbox, getvl('userid'), 'claimPter')
+  );
+} else if (location.href.includes('springsunday.net/userdetails.php')) {
+  // 春天领取种子
+  button.innerText = '一键认领';
+  setupButtonListener(button, () =>
+    handleTorrentsActions(button, ulbox, getvl('id'), 'claimSpring')
+  );
+} else if (location.href.includes('userdetails.php')) {
+  // 通用站点领取种子
+  button.innerText = '一键认领';
+  setupButtonListener(button, () =>
+    handleTorrentsActions(button, ulbox, getvl('id'), 'claim')
+  );
+} else if (location.href.includes('claim.php')) {
+  // 通用站点放弃本地没在做种的领种
+  button.innerText = '一键弃种';
+  ulbox.innerHTML = `<li>放弃本人没在做种的种子</li>`;
+  setupButtonListener(button, () =>
+    handleTorrentsActions(button, ulbox, getvl('uid'), 'abandon')
+  );
 }
+
 document.body.appendChild(div);
