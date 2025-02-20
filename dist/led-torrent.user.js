@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         一键领种、弃种
 // @namespace    方便用户一键领种、弃种
-// @version      1.3
+// @version      1.4
 // @author       waibuzheng
 // @description  努力支持多个站点一键领种、一键放弃本人没在做种的种子（慎用、测试可用）
-// @icon         https://lsky.waibuzheng.club:11111/thumbnails/ac488953e605496b9b9bb3f3ee29f0ad.png
+// @icon         https://lsky.939593.xyz:11111/thumbnails/b72467caac4cc8555b16946a51e89e7e.png
 // @match        http*://*/userdetails.php?id=*
 // @match        http*://*/claim.php?uid=*
 // @match        http*://pterclub.com/getusertorrentlist.php?*
@@ -405,6 +405,12 @@
     setupButtonListener(
       button,
       () => handleTorrentsActions(button, ulbox, getvl("id"), "claimSpring")
+    );
+  } else if (location.href.includes("pt.btschool.club/userdetails.php")) {
+    button.innerText = "一键认领";
+    setupButtonListener(
+      button,
+      () => handleTorrentsActions(button, ulbox, getvl("id"), "claimSCH")
     );
   } else if (location.href.includes("userdetails.php")) {
     button.innerText = "一键认领";
