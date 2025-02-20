@@ -2,21 +2,21 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 14:46:20
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2024-03-27 10:55:45
+ * @LastEditTime: 2024-04-02 16:20:56
  * @Description:
  */
-import '@/utils/led-torrent.scss';
+import { animateButton, getLedMsg, getvl } from '@/utils';
 import {
   handleLedTorrent,
   loadUserTorrents,
   loadUserTorrentsHistory
-} from './allIndex';
-import { handleLedPterTorrent, loadPterUserTorrents } from './pter';
+} from '@/utils/allIndex';
+import '@/utils/led-torrent.scss';
+import { handleLedPterTorrent, loadPterUserTorrents } from '@/utils/pter';
 import {
   handleLedSpringsundayTorrent,
   loadSpringsundayUserTorrents
-} from './springsunday';
-import { animateButton, getLedMsg, getvl } from './utils';
+} from '@/utils/springsunday';
 export type torrentDataIdsType = string[];
 
 // 优化事件监听器的设置
@@ -97,7 +97,7 @@ async function handleTorrentsActions(
   button: HTMLButtonElement,
   ulbox: HTMLElement,
   userId: string,
-  action: 'claim' | 'abandon' | 'claimPter' | 'claimSpring'
+  action: 'claim' | 'abandon' | 'claimPter' | 'claimSpring' | 'claimSCH'
 ) {
   const msglist: { [key in string]: number } = {};
   const ledlist: string[] = [];
@@ -149,6 +149,12 @@ if (location.href.includes('pterclub.com/getusertorrentlist.php')) {
   button.innerText = '一键认领';
   setupButtonListener(button, () =>
     handleTorrentsActions(button, ulbox, getvl('id'), 'claimSpring')
+  );
+} else if (location.href.includes('pt.btschool.club/userdetails.php')) {
+  // 学校领取种子
+  button.innerText = '一键认领';
+  setupButtonListener(button, () =>
+    handleTorrentsActions(button, ulbox, getvl('id'), 'claimSCH')
   );
 } else if (location.href.includes('userdetails.php')) {
   // 通用站点领取种子

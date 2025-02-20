@@ -1,10 +1,10 @@
-import { torrentDataIdsType } from './main';
-import { checkForNextPage } from './utils';
+import { checkForNextPage } from '.';
+import { torrentDataIdsType } from '../main';
 import {
   getNPHPLedTorrent,
   getNPHPUsertorrentHistory,
   getNPHPUsertorrentlistajax
-} from './utils/api';
+} from './api';
 
 /** 认领、放弃种子 */
 export async function handleLedTorrent(

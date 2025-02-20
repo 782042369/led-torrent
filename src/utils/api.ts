@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 12:15:00
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2024-03-27 10:49:01
+ * @LastEditTime: 2024-04-02 16:18:38
  * @Description:
  */
 
@@ -70,7 +70,7 @@ export const getNPHPPterLedTorrent = (id: string) => {
   });
 };
 
-/** 认领种子 */
+/** 春天认领种子 */
 export const getSSDLedTorrent = (id: string) => {
   const body = new FormData();
   body.append('action', 'add');
@@ -79,4 +79,16 @@ export const getSSDLedTorrent = (id: string) => {
     method: 'POST',
     body
   });
+};
+/** 学校认领种子 */
+export const getSchLedTorrent = (id: string) => {
+  const body = new FormData();
+  body.append('action', 'add');
+  body.append('id', id + '');
+  return request<PTAPI.LedTorrentDetails>(
+    `/viewclaims.php?add_torrent_id=${id}`,
+    {
+      method: 'GET'
+    }
+  );
 };
