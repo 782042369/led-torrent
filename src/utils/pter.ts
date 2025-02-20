@@ -2,16 +2,16 @@
  * @Author: yanghongxuan
  * @Date: 2024-03-27 09:52:03
  * @Description:
- * @LastEditTime: 2024-03-27 10:56:17
+ * @LastEditTime: 2024-03-27 09:52:24
  * @LastEditors: yanghongxuan
  */
 
-import { torrentDataIdsType } from './main';
-import { checkForNextPage } from './utils';
-import { getNPHPUsertorrentlistajax, getSSDLedTorrent } from './utils/api';
+import { checkForNextPage } from '.';
+import { torrentDataIdsType } from '../main';
+import { getNPHPPterLedTorrent, getNPHPPterUsertorrentlistajax } from './api';
 
 /** 查找猫站历史做种且领种数据 */
-export async function loadSpringsundayUserTorrents(
+export async function loadPterUserTorrents(
   userid: string,
   allData: torrentDataIdsType,
   ledlist: string[]
@@ -19,26 +19,24 @@ export async function loadSpringsundayUserTorrents(
   let page = 0;
   let hasMore = true;
   do {
-    const details = await getNPHPUsertorrentlistajax({
+    const details = await getNPHPPterUsertorrentlistajax({
       page,
       userid
     });
     const parser = new DOMParser();
     const doc = parser.parseFromString(details, 'text/html');
-    const claimDoms = doc.querySelectorAll('.btn');
-    const removeDoms = doc.querySelectorAll('.nowrap');
+    const claimDoms = doc.querySelectorAll('.claim-confirm');
+    const removeDoms = doc.querySelectorAll('.remove-confirm');
     claimDoms.forEach((v) => {
-      const id = v.getAttribute('id')?.replace('btn', '') || '';
+      const id = v.getAttribute('data-url') || '';
       if (!allData.includes(id)) {
         allData.push(id);
       }
     });
     removeDoms.forEach((v) => {
-      if (v.innerHTML === '已认领') {
-        const id = v.getAttribute('id')?.replace('btn', '') || '';
-        if (!ledlist.includes(id)) {
-          ledlist.push(id);
-        }
+      const id = v.getAttribute('data-url') || '';
+      if (!ledlist.includes(id)) {
+        ledlist.push(id);
       }
     });
     page++;
@@ -50,7 +48,7 @@ export async function loadSpringsundayUserTorrents(
   } while (hasMore);
 }
 // 猫站认领种子接口
-export async function handleLedSpringsundayTorrent(
+export async function handleLedPterTorrent(
   arr: torrentDataIdsType,
   button: HTMLButtonElement,
   json: { [key in string]: number }
@@ -58,7 +56,7 @@ export async function handleLedSpringsundayTorrent(
   for (let i = 0; i < arr.length; i++) {
     button.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`;
     try {
-      let data = await getSSDLedTorrent(arr[i]);
+      let data = await getNPHPPterLedTorrent(arr[i]);
       const msg = data ? '领取成功' : '领取失败';
       json[msg] = (json[msg] || 0) + 1;
     } catch (error) {
