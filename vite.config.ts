@@ -5,9 +5,9 @@
  * @LastEditTime: 2025-02-20 13:54:08
  * @Description:
  */
-import { resolve } from 'path';
-import { defineConfig } from 'vite';
-import monkey from 'vite-plugin-monkey';
+import { resolve } from 'node:path'
+import { defineConfig } from 'vite'
+import monkey from 'vite-plugin-monkey'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -20,22 +20,22 @@ export default defineConfig({
         match: [
           'http*://*/userdetails.php?id=*',
           'http*://*/claim.php?uid=*',
-          'http*://pterclub.com/getusertorrentlist.php?*'
+          'http*://pterclub.com/getusertorrentlist.php?*',
         ],
         version: '1.4',
         name: '一键领种、弃种',
         author: 'waibuzheng',
         description:
-          '努力支持多个站点一键领种、一键放弃本人没在做种的种子（慎用、测试可用）'
+          '努力支持多个站点一键领种、一键放弃本人没在做种的种子（慎用、测试可用）',
       },
       build: {
-        externalGlobals: {}
-      }
-    })
+        externalGlobals: {},
+      },
+    }),
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src')
-    }
-  }
-});
+      '@': resolve(__dirname, 'src'),
+    },
+  },
+})
