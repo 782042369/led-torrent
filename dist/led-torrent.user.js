@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         一键领种、弃种
 // @namespace    方便用户一键领种、弃种
-// @version      1.4
+// @version      1.5
 // @author       waibuzheng
 // @description  努力支持多个站点一键领种、一键放弃本人没在做种的种子（慎用、测试可用）
 // @icon         https://lsky.939593.xyz:11111/thumbnails/b72467caac4cc8555b16946a51e89e7e.png
