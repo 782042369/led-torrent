@@ -25,6 +25,7 @@ export default antfu({
       },
     ],
     'node/prefer-global/process': 'off',
+    'no-alert': 'off',
   },
   ignores: [
     '**/node_modules/**',
