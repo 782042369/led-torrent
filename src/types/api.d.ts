@@ -9,16 +9,16 @@ namespace PTAPI {
   /** 用户做种列表 */
   interface TorrentList {
     data?: {
-      id: string;
-    }[];
+      id: string
+    }[]
     meta?: {
-      to: number;
-      total: number;
-    };
+      to: number
+      total: number
+    }
   }
   /** 领取种子结果详情 */
   interface LedTorrentDetails {
-    msg: string | 'OK';
-    ret: -1 | 0;
+    msg: string | 'OK'
+    ret: -1 | 0
   }
 }
