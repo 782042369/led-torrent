@@ -22,7 +22,7 @@ export default defineConfig({
           'http*://*/claim.php?uid=*',
           'http*://pterclub.com/getusertorrentlist.php?*',
         ],
-        version: '1.4',
+        version: '1.5',
         name: '一键领种、弃种',
         author: 'waibuzheng',
         description:
