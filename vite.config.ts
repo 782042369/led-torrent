@@ -15,14 +15,14 @@ export default defineConfig({
     monkey({
       entry: 'src/main.ts',
       userscript: {
-        icon: 'https://lsky.939593.xyz:11111/thumbnails/b72467caac4cc8555b16946a51e89e7e.png',
+        icon: 'https://lsky.939593.xyz:11111/Y7bbx9.jpg',
         namespace: '方便用户一键领种、弃种',
         match: [
           'http*://*/userdetails.php?id=*',
           'http*://*/claim.php?uid=*',
           'http*://pterclub.com/getusertorrentlist.php?*',
         ],
-        version: '1.5',
+        version: '1.6',
         name: '一键领种、弃种',
         author: 'waibuzheng',
         description:
