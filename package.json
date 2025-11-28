@@ -9,13 +9,13 @@
     "lint": "eslint --fix"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.17.0",
-    "@types/node": "^24.0.14",
-    "eslint": "^9.31.0",
-    "eslint-plugin-format": "^1.0.1",
-    "sass": "^1.89.2",
-    "typescript": "^5.8.3",
-    "vite": "^7.0.5",
-    "vite-plugin-monkey": "^5.0.9"
+    "@antfu/eslint-config": "^6.2.0",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-format": "^1.0.2",
+    "sass": "^1.94.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4",
+    "vite-plugin-monkey": "^7.1.5"
   }
 }
