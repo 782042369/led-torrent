@@ -1,36 +1,16 @@
 /*
  * @Author: yanghongxuan
- * @Date: 2024-04-02 16:26:37
- * @Description:
- * @LastEditTime: 2024-04-02 17:09:57
+ * @Date: 2024-12-23 12:50:14
  * @LastEditors: yanghongxuan
+ * @LastEditTime: 2024-12-23 12:50:14
+ * @Description: SCH 站点相关功能
  */
 import type { TorrentDataIdsType } from '@/types'
 
-import { checkForNextPage } from '.'
-import { getNPHPLedTorrent, getNPHPUsertorrentHistory } from './api'
+import { getNPHPUsertorrentHistory } from '../api'
+import { checkForNextPage } from '../common'
 
-/** 认领、放弃种子 */
-export async function handleLedTorrent(
-  arr: TorrentDataIdsType,
-  button: HTMLButtonElement,
-  json: { [key in string]: number },
-  type: 'removeClaim' | 'addClaim',
-) {
-  for (let i = 0; i < arr.length; i++) {
-    button.innerHTML = `努力再努力 ${arr.length} / ${i + 1}`
-    try {
-      const data = await getNPHPLedTorrent(arr[i], type)
-      const msg = data.msg || '领种接口返回信息错误'
-      json[msg] = (json[msg] || 0) + 1
-    }
-    catch (error) {
-      console.error('handleLedTorrent error: ', error)
-    }
-  }
-}
-
-/** 查找历史领种数据 */
+/** 查找 SCH 站点历史领种数据 */
 export async function loadSchTorrentsHistory(
   uid: string,
   allData: TorrentDataIdsType,

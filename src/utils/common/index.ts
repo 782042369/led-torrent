@@ -1,25 +1,9 @@
 /*
  * @Author: yanghongxuan
- * @Date: 2024-12-23 12:50:14
- * @LastEditors: yanghongxuan
- * @LastEditTime: 2024-12-23 12:50:14
- * @Description: 工具函数入口文件
- */
-
-// 导出通用工具函数
-export * from './common'
-
-// 导出站点处理函数
-export * from './common/site'
-export * from './sites/pter'
-export * from './sites/springsunday'
-
-/*
- * @Author: yanghongxuan
  * @Date: 2023-11-01 15:56:38
  * @LastEditors: yanghongxuan
  * @LastEditTime: 2023-11-12 15:48:21
- * @Description:
+ * @Description: 通用工具函数
  */
 export function getvl(name: string) {
   const params = new URLSearchParams(window.location.search)

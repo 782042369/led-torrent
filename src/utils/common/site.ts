@@ -1,3 +1,11 @@
+/*
+ * @Author: yanghongxuan
+ * @Date: 2024-12-23 12:50:14
+ * @LastEditors: yanghongxuan
+ * @LastEditTime: 2024-12-23 12:50:14
+ * @Description: 站点通用处理函数
+ */
+
 import type { TorrentDataIdsType } from '@/types'
 
 import { checkForNextPage } from '.'
@@ -5,7 +13,7 @@ import {
   getNPHPLedTorrent,
   getNPHPUsertorrentHistory,
   getNPHPUsertorrentlistajax,
-} from './api'
+} from '../api'
 
 /** 认领、放弃种子 */
 export async function handleLedTorrent(
@@ -26,6 +34,7 @@ export async function handleLedTorrent(
     }
   }
 }
+
 /** 查找历史做种且领种数据 */
 export async function loadUserTorrents(
   userid: string,
@@ -81,6 +90,7 @@ export async function loadUserTorrents(
     )
   } while (hasMore)
 }
+
 /** 查找历史领种数据 */
 export async function loadUserTorrentsHistory(
   uid: string,

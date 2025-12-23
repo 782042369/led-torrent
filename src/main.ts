@@ -5,18 +5,19 @@
  * @LastEditTime: 2024-04-02 16:20:56
  * @Description:
  */
-import { animateButton, getLedMsg, getvl } from '@/utils'
 import {
+  animateButton,
+  getLedMsg,
+  getvl,
+  handleLedPterTorrent,
+  handleLedSpringsundayTorrent,
   handleLedTorrent,
+  loadPterUserTorrents,
+  loadSpringsundayUserTorrents,
   loadUserTorrents,
   loadUserTorrentsHistory,
-} from '@/utils/allIndex'
+} from '@/utils'
 import '@/styles/led-torrent.scss'
-import { handleLedPterTorrent, loadPterUserTorrents } from '@/utils/pter'
-import {
-  handleLedSpringsundayTorrent,
-  loadSpringsundayUserTorrents,
-} from '@/utils/springsunday'
 
 import type { TorrentDataIdsType } from './types'
 
