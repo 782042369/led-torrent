@@ -23,6 +23,7 @@ export async function loadSpringsundayUserTorrents(
     const details = await getNPHPUsertorrentlistajax({
       page,
       userid,
+      type: 'seeding',
     })
     const parser = new DOMParser()
     const doc = parser.parseFromString(details, 'text/html')

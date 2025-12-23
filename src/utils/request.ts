@@ -10,6 +10,7 @@ interface RequestOptions {
   headers?: Record<string, string>
   body?: any
   timeout?: number
+  params?: Record<string, any>
 }
 
 async function fetchWithTimeout(
@@ -24,16 +25,34 @@ async function fetchWithTimeout(
     ),
   ])
 }
+function buildURL(url: string, params?: Record<string, any>): string {
+  let fullUrl = url
 
+  // 添加查询参数
+  if (params) {
+    const searchParams = new URLSearchParams()
+    Object.keys(params).forEach((key) => {
+      if (params[key] !== undefined && params[key] !== null) {
+        searchParams.append(key, params[key])
+      }
+    })
+    const queryString = searchParams.toString()
+    if (queryString) {
+      fullUrl += (fullUrl.includes('?') ? '&' : '?') + queryString
+    }
+  }
+
+  return fullUrl
+}
 async function request<T>(
   url: string,
   options: RequestOptions = {},
 ): Promise<T> {
-  const { method = 'GET', headers = {}, body, timeout } = options
+  const { method = 'GET', headers = {}, body, timeout, params } = options
 
   try {
     const response = await fetchWithTimeout(
-      url,
+      method === 'GET' ? buildURL(url, params) : url,
       {
         method,
         headers,

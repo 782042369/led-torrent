@@ -23,6 +23,7 @@ export async function loadPterUserTorrents(
     const details = await getNPHPPterUsertorrentlistajax({
       page,
       userid,
+      type: 'seeding',
     })
     const parser = new DOMParser()
     const doc = parser.parseFromString(details, 'text/html')

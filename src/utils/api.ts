@@ -29,11 +29,13 @@ export function getNPHPLedTorrent(id: string, type: 'removeClaim' | 'addClaim') 
 export async function getNPHPUsertorrentlistajax(params: {
   page: number
   userid: string
+  type: 'seeding'
 }) {
   return request<string>(
-    `getusertorrentlistajax.php?page=${params.page}&userid=${params.userid}&type=seeding`,
+    'getusertorrentlistajax.php',
     {
       method: 'GET',
+      params,
     },
   )
 }
@@ -43,22 +45,26 @@ export async function getNPHPUsertorrentHistory(params: {
   page: number
   uid: string
 }) {
-  return request<string>(`claim.php?page=${params.page}&uid=${params.uid}`, {
+  return request<string>('claim.php', {
     method: 'GET',
+    params,
   })
 }
-
+/** 猫站种子列表 */
 export async function getNPHPPterUsertorrentlistajax(params: {
   page: number
   userid: string
+  type: 'seeding'
 }) {
   return request<string>(
-    `getusertorrentlist.php?page=${params.page}&userid=${params.userid}&type=seeding`,
+    'getusertorrentlist.php',
     {
       method: 'GET',
+      params,
     },
   )
 }
+/** 猫站领取种子 */
 export function getNPHPPterLedTorrent(id: string) {
   const body = new FormData()
 
@@ -79,14 +85,17 @@ export function getSSDLedTorrent(id: string) {
   })
 }
 /** 学校认领种子 */
-export function getSchLedTorrent(id: string) {
-  const body = new FormData()
-  body.append('action', 'add')
-  body.append('id', `${id}`)
-  return request<PTAPI.LedTorrentDetails>(
-    `/viewclaims.php?add_torrent_id=${id}`,
-    {
-      method: 'GET',
-    },
-  )
-}
+// export function getSchLedTorrent(id: string) {
+//   const body = new FormData()
+//   body.append('action', 'add')
+//   body.append('id', `${id}`)
+//   return request<PTAPI.LedTorrentDetails>(
+//     `/viewclaims.php?add_torrent_id=${id}`,
+//     {
+//       method: 'GET',
+//       params:{
+
+//       }
+//     },
+//   )
+// }
