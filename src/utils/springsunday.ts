@@ -6,7 +6,7 @@
  * @LastEditors: yanghongxuan
  */
 
-import type { torrentDataIdsType } from '../main'
+import type { TorrentDataIdsType } from '@/types'
 
 import { checkForNextPage } from '.'
 import { getNPHPUsertorrentlistajax, getSSDLedTorrent } from './api'
@@ -14,7 +14,7 @@ import { getNPHPUsertorrentlistajax, getSSDLedTorrent } from './api'
 /** 查找猫站历史做种且领种数据 */
 export async function loadSpringsundayUserTorrents(
   userid: string,
-  allData: torrentDataIdsType,
+  allData: TorrentDataIdsType,
   ledlist: string[],
 ) {
   let page = 0
@@ -52,7 +52,7 @@ export async function loadSpringsundayUserTorrents(
 }
 // 猫站认领种子接口
 export async function handleLedSpringsundayTorrent(
-  arr: torrentDataIdsType,
+  arr: TorrentDataIdsType,
   button: HTMLButtonElement,
   json: { [key in string]: number },
 ) {

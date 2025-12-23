@@ -1,4 +1,4 @@
-import type { torrentDataIdsType } from '../main'
+import type { TorrentDataIdsType } from '@/types'
 
 import { checkForNextPage } from '.'
 import {
@@ -9,7 +9,7 @@ import {
 
 /** 认领、放弃种子 */
 export async function handleLedTorrent(
-  arr: torrentDataIdsType,
+  arr: TorrentDataIdsType,
   button: HTMLButtonElement,
   json: { [key in string]: number },
   type: 'removeClaim' | 'addClaim',
@@ -29,7 +29,7 @@ export async function handleLedTorrent(
 /** 查找历史做种且领种数据 */
 export async function loadUserTorrents(
   userid: string,
-  allData: torrentDataIdsType,
+  allData: TorrentDataIdsType,
   ledlist: string[],
 ) {
   let page = 0
@@ -83,7 +83,7 @@ export async function loadUserTorrents(
 /** 查找历史领种数据 */
 export async function loadUserTorrentsHistory(
   uid: string,
-  allData: torrentDataIdsType,
+  allData: TorrentDataIdsType,
   ledlist: string[],
 ) {
   let page = 0

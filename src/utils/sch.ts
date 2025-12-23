@@ -5,14 +5,14 @@
  * @LastEditTime: 2024-04-02 17:09:57
  * @LastEditors: yanghongxuan
  */
-import type { torrentDataIdsType } from '../main'
+import type { TorrentDataIdsType } from '@/types'
 
 import { checkForNextPage } from '.'
 import { getNPHPLedTorrent, getNPHPUsertorrentHistory } from './api'
 
 /** 认领、放弃种子 */
 export async function handleLedTorrent(
-  arr: torrentDataIdsType,
+  arr: TorrentDataIdsType,
   button: HTMLButtonElement,
   json: { [key in string]: number },
   type: 'removeClaim' | 'addClaim',
@@ -33,7 +33,7 @@ export async function handleLedTorrent(
 /** 查找历史领种数据 */
 export async function loadSchTorrentsHistory(
   uid: string,
-  allData: torrentDataIdsType,
+  allData: TorrentDataIdsType,
   ledlist: string[],
 ) {
   let page = 0

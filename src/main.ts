@@ -11,14 +11,15 @@ import {
   loadUserTorrents,
   loadUserTorrentsHistory,
 } from '@/utils/allIndex'
-import '@/utils/led-torrent.scss'
+import '@/styles/led-torrent.scss'
 import { handleLedPterTorrent, loadPterUserTorrents } from '@/utils/pter'
 import {
   handleLedSpringsundayTorrent,
   loadSpringsundayUserTorrents,
 } from '@/utils/springsunday'
 
-export type torrentDataIdsType = string[]
+import type { TorrentDataIdsType } from './types'
+
 // 初始化
 let loading = false
 // 优化事件监听器的设置
@@ -72,7 +73,7 @@ if (location.href.includes('claim.php')) {
       const ledlist: string[] = []
       await loadUserTorrents(uid, [], ledlist)
       ulbox.innerHTML += `<li>获取所有在做种且领取状态的数据一共${ledlist.length}个</li>`
-      const allData: torrentDataIdsType = []
+      const allData: TorrentDataIdsType = []
       button.textContent = '获取所有领种的数据'
       await loadUserTorrentsHistory(uid, allData, ledlist)
       ulbox.innerHTML += `<li>获取所有没在做种且领取状态的数据一共${allData.length}个</li>`
@@ -105,7 +106,7 @@ async function handleTorrentsActions(
 ) {
   const msglist: { [key in string]: number } = {}
   const ledlist: string[] = []
-  const allData: torrentDataIdsType = []
+  const allData: TorrentDataIdsType = []
 
   // 根据不同的操作调用不同的函数获取种子数据
   if (action === 'claim' || action === 'abandon') {
