@@ -11,7 +11,13 @@ import type { TorrentDataIdsType } from '@/types'
 import { getNPHPUsertorrentlistajax, getSSDLedTorrent } from '../api'
 import { checkForNextPage } from '../common'
 
-/** 查找春天站历史做种且领种数据 */
+/**
+ * 查找春天站历史做种且领种数据
+ *
+ * @param userid - 用户ID
+ * @param allData - 用于存储所有种子ID的数组
+ * @param ledlist - 用于存储已领种子ID的数组
+ */
 export async function loadSpringsundayUserTorrents(
   userid: string,
   allData: TorrentDataIdsType,
@@ -52,7 +58,13 @@ export async function loadSpringsundayUserTorrents(
   } while (hasMore)
 }
 
-// 春天站认领种子接口
+/**
+ * Springsunday站点领种处理函数
+ *
+ * @param arr - 种子ID数组
+ * @param button - 操作按钮元素，用于显示进度
+ * @param json - 用于统计结果的消息对象
+ */
 export async function handleLedSpringsundayTorrent(
   arr: TorrentDataIdsType,
   button: HTMLButtonElement,

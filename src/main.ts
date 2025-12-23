@@ -2,8 +2,8 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 14:46:20
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2024-04-02 16:20:56
- * @Description:
+ * @LastEditTime: 2025-05-13 15:00:00
+ * @Description: LED Torrent 主入口文件，用于在各大PT站点实现一键领种/弃种功能
  */
 import {
   animateButton,
@@ -21,9 +21,15 @@ import '@/styles/led-torrent.scss'
 
 import type { TorrentDataIdsType } from './types'
 
-// 初始化
+// 初始化加载状态
 let loading = false
 // 优化事件监听器的设置
+/**
+ * 设置按钮监听器，处理领种/弃种操作
+ *
+ * @param button - 操作按钮元素
+ * @param action - 异步操作函数，执行具体的领种或弃种逻辑
+ */
 function setupButtonListener(
   button: HTMLButtonElement,
   action: () => Promise<void>,
@@ -99,6 +105,15 @@ if (location.href.includes('claim.php')) {
 
 // 定义一些通用的函数来处理重复的逻辑
 
+/**
+ * 处理不同站点的种子操作（认领、放弃等）
+ *
+ * @param button - 操作按钮元素，用于显示状态信息
+ * @param ulbox - 显示操作消息的列表元素
+ * @param userId - 用户ID，用于获取用户相关的种子数据
+ * @param action - 操作类型，指定要执行的具体操作
+ * @returns Promise<void> - 异步操作完成后的Promise
+ */
 async function handleTorrentsActions(
   button: HTMLButtonElement,
   ulbox: HTMLElement,

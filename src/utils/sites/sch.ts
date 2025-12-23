@@ -10,7 +10,13 @@ import type { TorrentDataIdsType } from '@/types'
 import { getNPHPUsertorrentHistory } from '../api'
 import { checkForNextPage } from '../common'
 
-/** 查找 SCH 站点历史领种数据 */
+/**
+ * 查找 SCH 站点历史领种数据
+ *
+ * @param uid - 用户ID
+ * @param allData - 用于存储所有数据的数组
+ * @param ledlist - 用于存储已领列表的数组
+ */
 export async function loadSchTorrentsHistory(
   uid: string,
   allData: TorrentDataIdsType,

@@ -14,13 +14,6 @@ export * from './common/site'
 export * from './sites/pter'
 export * from './sites/springsunday'
 
-/*
- * @Author: yanghongxuan
- * @Date: 2023-11-01 15:56:38
- * @LastEditors: yanghongxuan
- * @LastEditTime: 2023-11-12 15:48:21
- * @Description:
- */
 export function getvl(name: string) {
   const params = new URLSearchParams(window.location.search)
   const result: Record<string, string> = {}

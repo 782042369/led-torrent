@@ -11,7 +11,13 @@ import type { TorrentDataIdsType } from '@/types'
 import { getNPHPPterLedTorrent, getNPHPPterUsertorrentlistajax } from '../api'
 import { checkForNextPage } from '../common'
 
-/** 查找猫站历史做种且领种数据 */
+/**
+ * 加载Pter站点用户做种数据，获取可以认领和已认领的种子列表
+ *
+ * @param userid - 用户ID
+ * @param allData - 用于存储可以认领的种子ID数组
+ * @param ledlist - 用于存储已认领的种子ID数组
+ */
 export async function loadPterUserTorrents(
   userid: string,
   allData: TorrentDataIdsType,
@@ -50,7 +56,13 @@ export async function loadPterUserTorrents(
   } while (hasMore)
 }
 
-// 猫站认领种子接口
+/**
+ * 执行Pter站点的领种操作
+ *
+ * @param arr - 包含种子ID的数组
+ * @param button - 操作按钮元素，用于显示进度
+ * @param json - 用于统计结果的消息对象
+ */
 export async function handleLedPterTorrent(
   arr: TorrentDataIdsType,
   button: HTMLButtonElement,

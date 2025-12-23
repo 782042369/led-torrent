@@ -5,6 +5,7 @@
  * @LastEditTime: 2024-01-20 20:49:26
  * @Description:
  */
+
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
   headers?: Record<string, string>
@@ -44,6 +45,14 @@ function buildURL(url: string, params?: Record<string, any>): string {
 
   return fullUrl
 }
+
+/**
+ * 发起HTTP请求
+ *
+ * @template T - 响应数据的类型
+ * @param url - 请求的URL
+ * @param options - 请求选项
+ */
 async function request<T>(
   url: string,
   options: RequestOptions = {},
