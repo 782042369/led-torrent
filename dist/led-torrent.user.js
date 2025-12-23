@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         一键领种、弃种
 // @namespace    方便用户一键领种、弃种
-// @version      1.6
+// @version      1.7
 // @author       waibuzheng
 // @description  努力支持多个站点一键领种、一键放弃本人没在做种的种子（慎用、测试可用）
 // @icon         https://lsky.939593.xyz:11111/Y7bbx9.jpg
@@ -16,34 +16,8 @@
 
   const d=new Set;const importCSS = async e=>{d.has(e)||(d.add(e),(t=>{typeof GM_addStyle=="function"?GM_addStyle(t):(document.head||document.documentElement).appendChild(document.createElement("style")).append(t);})(e));};
 
-  function getvl(name) {
-    const params = new URLSearchParams(window.location.search);
-    const result = {};
-    for (const [key, value] of params.entries()) {
-      result[key] = value;
-    }
-    return result[name] ?? "";
-  }
   function checkForNextPage(doc, nextPageLinkSelector) {
     return Boolean(doc.querySelector(nextPageLinkSelector));
-  }
-  function animateButton(e) {
-    e.preventDefault();
-    if (e.target && e.target instanceof Element) {
-      const target = e.target;
-      target.classList.remove("animate");
-      target.classList.add("animate");
-      setTimeout(() => {
-        target.classList.remove("animate");
-      }, 700);
-    }
-  }
-  function getLedMsg(msglist) {
-    let msgLi = "";
-    Object.keys(msglist).forEach((e) => {
-      msgLi += `<li>${e}: ${msglist[e]}</li>`;
-    });
-    return msgLi;
   }
   async function fetchWithTimeout(input, init, timeout = 1e5) {
     return Promise.race([
@@ -53,11 +27,27 @@
       )
     ]);
   }
+  function buildURL(url, params) {
+    let fullUrl = url;
+    if (params) {
+      const searchParams = new URLSearchParams();
+      Object.keys(params).forEach((key) => {
+        if (params[key] !== void 0 && params[key] !== null) {
+          searchParams.append(key, params[key]);
+        }
+      });
+      const queryString = searchParams.toString();
+      if (queryString) {
+        fullUrl += (fullUrl.includes("?") ? "&" : "?") + queryString;
+      }
+    }
+    return fullUrl;
+  }
   async function request(url, options = {}) {
-    const { method = "GET", headers = {}, body, timeout } = options;
+    const { method = "GET", headers = {}, body, timeout, params } = options;
     try {
       const response = await fetchWithTimeout(
-        url,
+        method === "GET" ? buildURL(url, params) : url,
         {
           method,
           headers,
@@ -101,22 +91,25 @@
   }
   async function getNPHPUsertorrentlistajax(params) {
     return request(
-      `getusertorrentlistajax.php?page=${params.page}&userid=${params.userid}&type=seeding`,
+      "getusertorrentlistajax.php",
       {
-        method: "GET"
+        method: "GET",
+        params
       }
     );
   }
   async function getNPHPUsertorrentHistory(params) {
-    return request(`claim.php?page=${params.page}&uid=${params.uid}`, {
-      method: "GET"
+    return request("claim.php", {
+      method: "GET",
+      params
     });
   }
   async function getNPHPPterUsertorrentlistajax(params) {
     return request(
-      `getusertorrentlist.php?page=${params.page}&userid=${params.userid}&type=seeding`,
+      "getusertorrentlist.php",
       {
-        method: "GET"
+        method: "GET",
+        params
       }
     );
   }
@@ -154,7 +147,8 @@
     do {
       const details = await getNPHPUsertorrentlistajax({
         page,
-        userid
+        userid,
+        type: "seeding"
       });
       const parser = new DOMParser();
       const doc = parser.parseFromString(details, "text/html");
@@ -215,15 +209,14 @@
       hasMore = checkForNextPage(doc, `a[href*="?uid=${uid}&page=${page}"]`);
     } while (hasMore);
   }
-  const ledTorrentScss = '.led-box{position:fixed;top:80px;left:20px;z-index:9999;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}.led-box ul{margin-left:0;padding-left:0}.led-box li{color:#fff;background-color:#ff0081;list-style:none;line-height:20px;font-size:14px;margin-left:0;padding:8px 10px}.bubbly-button{font-family:Helvetica,Arial,sans-serif;display:inline-block;font-size:20px;padding:8px 10px;appearance:none;background-color:#ff0081;color:#fff;border-radius:4px;border:none;cursor:pointer;position:relative;transition:transform ease-in .1s,box-shadow ease-in .25s;box-shadow:0 2px 25px #ff008280}.bubbly-button:hover{background-color:#ff0081}.bubbly-button:focus{outline:0}.bubbly-button:before,.bubbly-button:after{position:absolute;content:"";display:block;width:140%;height:100%;left:-20%;z-index:-1000;transition:all ease-in-out .5s;background-repeat:no-repeat}.bubbly-button:before{display:none;top:-75%;background-image:radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,transparent 20%,#ff0081 20%,transparent 30%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,transparent 10%,#ff0081 15%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%);background-size:10% 10%,20% 20%,15% 15%,20% 20%,18% 18%,10% 10%,15% 15%,10% 10%,18% 18%}.bubbly-button:after{display:none;bottom:-75%;background-image:radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,transparent 10%,#ff0081 15%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%);background-size:15% 15%,20% 20%,18% 18%,20% 20%,15% 15%,10% 10%,20% 20%}.bubbly-button:active{transform:scale(.9);background-color:#e60074;box-shadow:0 2px 25px #ff008233}.bubbly-button.animate:before{display:block;animation:topBubbles ease-in-out .75s forwards}.bubbly-button.animate:after{display:block;animation:bottomBubbles ease-in-out .75s forwards}@keyframes topBubbles{0%{background-position:5% 90%,10% 90%,10% 90%,15% 90%,25% 90%,25% 90%,40% 90%,55% 90%,70% 90%}50%{background-position:0% 80%,0% 20%,10% 40%,20% 0%,30% 30%,22% 50%,50% 50%,65% 20%,90% 30%}to{background-position:0% 70%,0% 10%,10% 30%,20% -10%,30% 20%,22% 40%,50% 40%,65% 10%,90% 20%;background-size:0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%}}@keyframes bottomBubbles{0%{background-position:10% -10%,30% 10%,55% -10%,70% -10%,85% -10%,70% -10%,70% 0%}50%{background-position:0% 80%,20% 80%,45% 60%,60% 100%,75% 70%,95% 60%,105% 0%}to{background-position:0% 90%,20% 90%,45% 70%,60% 110%,75% 80%,95% 70%,110% 10%;background-size:0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%}}';
-  importCSS(ledTorrentScss);
   async function loadPterUserTorrents(userid, allData, ledlist) {
     let page = 0;
     let hasMore = true;
     do {
       const details = await getNPHPPterUsertorrentlistajax({
         page,
-        userid
+        userid,
+        type: "seeding"
       });
       const parser = new DOMParser();
       const doc = parser.parseFromString(details, "text/html");
@@ -256,7 +249,7 @@
         const msg = data ? "领取成功" : "领取失败";
         json[msg] = (json[msg] || 0) + 1;
       } catch (error) {
-        console.error("handleLedTorrent error: ", error);
+        console.error("handleLedPterTorrent error: ", error);
       }
     }
   }
@@ -266,7 +259,8 @@
     do {
       const details = await getNPHPUsertorrentlistajax({
         page,
-        userid
+        userid,
+        type: "seeding"
       });
       const parser = new DOMParser();
       const doc = parser.parseFromString(details, "text/html");
@@ -301,10 +295,38 @@
         const msg = data ? "领取成功" : "领取失败";
         json[msg] = (json[msg] || 0) + 1;
       } catch (error) {
-        console.error("handleLedTorrent error: ", error);
+        console.error("handleLedSpringsundayTorrent error: ", error);
       }
     }
   }
+  function getvl(name) {
+    const params = new URLSearchParams(window.location.search);
+    const result = {};
+    for (const [key, value] of params.entries()) {
+      result[key] = value;
+    }
+    return result[name] ?? "";
+  }
+  function animateButton(e) {
+    e.preventDefault();
+    if (e.target && e.target instanceof Element) {
+      const target = e.target;
+      target.classList.remove("animate");
+      target.classList.add("animate");
+      setTimeout(() => {
+        target.classList.remove("animate");
+      }, 700);
+    }
+  }
+  function getLedMsg(msglist) {
+    let msgLi = "";
+    Object.keys(msglist).forEach((e) => {
+      msgLi += `<li>${e}: ${msglist[e]}</li>`;
+    });
+    return msgLi;
+  }
+  const ledTorrentScss = '.led-box{position:fixed;top:80px;left:20px;z-index:9999;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}.led-box ul{margin-left:0;padding-left:0}.led-box li{color:#fff;background-color:#ff0081;list-style:none;line-height:20px;font-size:14px;margin-left:0;padding:8px 10px}.bubbly-button{font-family:Helvetica,Arial,sans-serif;display:inline-block;font-size:20px;padding:8px 10px;appearance:none;background-color:#ff0081;color:#fff;border-radius:4px;border:none;cursor:pointer;position:relative;transition:transform ease-in .1s,box-shadow ease-in .25s;box-shadow:0 2px 25px #ff008280}.bubbly-button:hover{background-color:#ff0081}.bubbly-button:focus{outline:0}.bubbly-button:before,.bubbly-button:after{position:absolute;content:"";display:block;width:140%;height:100%;left:-20%;z-index:-1000;transition:all ease-in-out .5s;background-repeat:no-repeat}.bubbly-button:before{display:none;top:-75%;background-image:radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,transparent 20%,#ff0081 20%,transparent 30%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,transparent 10%,#ff0081 15%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%);background-size:10% 10%,20% 20%,15% 15%,20% 20%,18% 18%,10% 10%,15% 15%,10% 10%,18% 18%}.bubbly-button:after{display:none;bottom:-75%;background-image:radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,transparent 10%,#ff0081 15%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%),radial-gradient(circle,#ff0081 20%,transparent 20%);background-size:15% 15%,20% 20%,18% 18%,20% 20%,15% 15%,10% 10%,20% 20%}.bubbly-button:active{transform:scale(.9);background-color:#e60074;box-shadow:0 2px 25px #ff008233}.bubbly-button.animate:before{display:block;animation:topBubbles ease-in-out .75s forwards}.bubbly-button.animate:after{display:block;animation:bottomBubbles ease-in-out .75s forwards}@keyframes topBubbles{0%{background-position:5% 90%,10% 90%,10% 90%,15% 90%,25% 90%,25% 90%,40% 90%,55% 90%,70% 90%}50%{background-position:0% 80%,0% 20%,10% 40%,20% 0%,30% 30%,22% 50%,50% 50%,65% 20%,90% 30%}to{background-position:0% 70%,0% 10%,10% 30%,20% -10%,30% 20%,22% 40%,50% 40%,65% 10%,90% 20%;background-size:0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%}}@keyframes bottomBubbles{0%{background-position:10% -10%,30% 10%,55% -10%,70% -10%,85% -10%,70% -10%,70% 0%}50%{background-position:0% 80%,20% 80%,45% 60%,60% 100%,75% 70%,95% 60%,105% 0%}to{background-position:0% 90%,20% 90%,45% 70%,60% 110%,75% 80%,95% 70%,110% 10%;background-size:0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%}}';
+  importCSS(ledTorrentScss);
   let loading = false;
   function setupButtonListener(button2, action) {
     button2.addEventListener("click", async (e) => {
