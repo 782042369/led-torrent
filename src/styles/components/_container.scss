@@ -1,0 +1,29 @@
+/*
+ * @Author: yanghongxuan
+ * @Date: 2026-01-14
+ * @LastEditors: yanghongxuan
+ * @LastEditTime: 2026-01-14
+ * @Description: 主容器组件样式
+ */
+
+@import '../variables';
+
+.led-box {
+  position: fixed;
+  top: 80px;
+  left: 20px;
+  z-index: $z-modal;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: auto;
+  padding: 16px;
+  background: $bg-dark;
+  border-radius: $radius-xl;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    $shadow-xl,
+    0 2px 8px rgba(255, 0, 129, 0.2);
+  border: 1px solid rgba(255, 0, 129, 0.15);
+}

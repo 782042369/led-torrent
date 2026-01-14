@@ -26,20 +26,23 @@ styles/
 **作用**：固定定位的操作面板容器
 
 **样式特性**：
+
 ```scss
 .led-box {
   position: fixed;
   top: 80px;
   left: 20px;
-  z-index: 9999;              // 确保在最上层
+  z-index: 9999; // 确保在最上层
   display: flex;
-  flex-direction: column;     // 垂直排列
+  flex-direction: column; // 垂直排列
   align-items: flex-start;
   justify-content: center;
 }
+
 ```
 
 **设计说明**：
+
 - 固定在页面左上角，不随滚动移动
 - `z-index: 9999` 确保不会被其他元素覆盖
 - 使用 Flexbox 垂直布局按钮和消息列表
@@ -55,6 +58,7 @@ ul {
   margin-left: 0;
   padding-left: 0;
 }
+
 ```
 
 #### `.led-box li`
@@ -62,6 +66,7 @@ ul {
 **作用**：单条消息的样式
 
 **样式特性**：
+
 ```scss
 li {
   color: #fff;
@@ -72,9 +77,11 @@ li {
   font-size: 14px;
   margin-left: 0;
 }
+
 ```
 
 **视觉效果**：
+
 - 粉红色背景（`#ff0081`）
 - 白色文字
 - 圆角列表项
@@ -99,12 +106,16 @@ li {
   border: none;
   cursor: pointer;
   position: relative;
-  transition: transform ease-in 0.1s, box-shadow ease-in 0.25s;
+  transition:
+    transform ease-in 0.1s,
+    box-shadow ease-in 0.25s;
   box-shadow: 0 2px 25px rgba(255, 0, 130, 0.5);
 }
+
 ```
 
 **视觉效果**：
+
 - 鲜艳的粉红色背景
 - 柔和的阴影效果
 - 平滑的过渡动画
@@ -116,6 +127,7 @@ li {
 &:hover {
   background-color: #ff0081;
 }
+
 ```
 
 #### 点击状态
@@ -126,9 +138,11 @@ li {
   background-color: #e60074;
   box-shadow: 0 2px 25px rgba(255, 0, 130, 0.2);
 }
+
 ```
 
 **动画效果**：
+
 - 按钮缩小至 90%
 - 背景色变深
 - 阴影变淡
@@ -152,9 +166,11 @@ li {
   transition: all ease-in-out 0.5s;
   background-repeat: no-repeat;
 }
+
 ```
 
 **设计原理**：
+
 - 使用 `::before` 和 `::after` 伪元素
 - 通过 `radial-gradient` 创建多个圆形气泡
 - 通过 `background-position` 控制气泡位置
@@ -183,10 +199,10 @@ li {
 .bubbly-button:after {
   display: none;
   bottom: -75%;
-  background-image:
-    radial-gradient(circle, #ff0081 20%, transparent 20%),
-    // ... 共 7 个径向渐变
+  background-image: radial-gradient(circle, #ff0081 20%, transparent 20%);
+  // ... 共 7 个径向渐变
 }
+
 ```
 
 ---
@@ -247,9 +263,11 @@ li {
   display: block;
   animation: bottomBubbles ease-in-out 0.75s forwards;
 }
+
 ```
 
 **触发方式**（JavaScript）：
+
 ```typescript
 export function animateButton(e: MouseEvent) {
   if (e.target && e.target instanceof Element) {
@@ -275,6 +293,7 @@ export function animateButton(e: MouseEvent) {
 ### 构建配置
 
 **Vite 配置**：
+
 - SCSS 自动编译为 CSS
 - 通过 `vite-plugin-monkey` 注入到用户脚本
 
@@ -313,7 +332,7 @@ ulbox.appendChild(li)
 
 ```typescript
 button.addEventListener('click', (e) => {
-  animateButton(e)  // 添加 .animate 类
+  animateButton(e) // 添加 .animate 类
   // 0.75 秒后自动移除 .animate 类
 })
 ```
@@ -327,10 +346,12 @@ button.addEventListener('click', (e) => {
 **当前主色**：`#ff0081` (粉红色)
 
 **修改位置**：
+
 ```scss
 // 全局替换颜色变量
 background-color: #your-color;
 box-shadow: 0 2px 25px rgba(your-r, your-g, your-b, 0.5);
+
 ```
 
 ### 调整容器位置
@@ -338,12 +359,14 @@ box-shadow: 0 2px 25px rgba(your-r, your-g, your-b, 0.5);
 **当前位置**：`top: 80px; left: 20px`
 
 **修改示例**：
+
 ```scss
 .led-box {
-  top: 100px;      // 距离顶部更远
-  left: 50%;       // 水平居中
+  top: 100px; // 距离顶部更远
+  left: 50%; // 水平居中
   transform: translateX(-50%);
 }
+
 ```
 
 ### 调整按钮尺寸
@@ -351,11 +374,13 @@ box-shadow: 0 2px 25px rgba(your-r, your-g, your-b, 0.5);
 **当前尺寸**：`font-size: 20px; padding: 8px 10px`
 
 **修改示例**：
+
 ```scss
 .bubbly-button {
-  font-size: 16px;   // 更小的字体
+  font-size: 16px; // 更小的字体
   padding: 6px 12px; // 调整内边距
 }
+
 ```
 
 ---
@@ -382,15 +407,17 @@ box-shadow: 0 2px 25px rgba(your-r, your-g, your-b, 0.5);
 ### 动画性能
 
 **优化点**：
+
 1. 使用 `transform` 和 `opacity` 进行动画（GPU 加速）
 2. 避免动画 `width` / `height`（触发重排）
 3. 动画结束后及时清理 `.animate` 类
 
 **当前实现**：
+
 ```typescript
 setTimeout(() => {
   target.classList.remove('animate')
-}, 700)  // 略小于动画时间（750ms）
+}, 700) // 略小于动画时间（750ms）
 ```
 
 ---
@@ -400,32 +427,38 @@ setTimeout(() => {
 ### Q1: 如何禁用按钮动画？
 
 **方法 1**：移除 `.animate` 类触发
+
 ```typescript
 // 注释掉动画调用
 // animateButton(e)
 ```
 
 **方法 2**：修改样式
+
 ```scss
 .bubbly-button.animate:before,
 .bubbly-button.animate:after {
   display: none !important;
 }
+
 ```
 
 ### Q2: 消息列表过长怎么办？
 
 **方法**：限制高度并添加滚动
+
 ```scss
 .led-box ul {
   max-height: 300px;
   overflow-y: auto;
 }
+
 ```
 
 ### Q3: 如何适配移动端？
 
 **响应式修改**：
+
 ```scss
 @media (max-width: 768px) {
   .led-box {
@@ -439,6 +472,7 @@ setTimeout(() => {
     width: 100%;
   }
 }
+
 ```
 
 ---
@@ -450,6 +484,7 @@ setTimeout(() => {
 - `styles/led-torrent.scss` - 212 行
 
 **代码结构**：
+
 - 容器样式：11 行
 - 列表样式：27 行
 - 按钮基础样式：54 行
@@ -462,6 +497,7 @@ setTimeout(() => {
 ## 设计灵感
 
 该按钮样式参考了 "Bubbly Button" 设计：
+
 - 创意的气泡动画效果
 - 平滑的过渡动画
 - 吸引用户注意的视觉效果
@@ -471,6 +507,7 @@ setTimeout(() => {
 ## 变更记录
 
 ### 2026-01-14
+
 - 初始化 styles 模块文档
 - 完成样式详解与定制指南
 - 补充动画原理说明

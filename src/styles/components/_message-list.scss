@@ -1,0 +1,87 @@
+/*
+ * @Author: yanghongxuan
+ * @Date: 2026-01-14
+ * @LastEditors: yanghongxuan
+ * @LastEditTime: 2026-01-14
+ * @Description: 消息列表组件样式
+ */
+
+@import '../variables';
+@import '../animations/index';
+
+.led-box {
+  ul {
+    margin: 12px 0 0 0;
+    padding: 0;
+    max-height: 450px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+
+    // 空列表时不显示
+    &:empty {
+      display: none;
+    }
+
+    // 自定义滚动条样式
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $bg-overlay;
+      border-radius: $radius-sm;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 0, 129, 0.4);
+      border-radius: $radius-sm;
+
+      &:hover {
+        background: rgba(255, 0, 129, 0.6);
+      }
+    }
+  }
+
+  li {
+    color: $text-white;
+    background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+    padding: 12px 16px;
+    list-style: none;
+    line-height: 1.6;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+    margin-bottom: 10px;
+    border-radius: $radius-lg;
+    box-shadow:
+      0 4px 12px rgba(255, 0, 129, 0.3),
+      $shadow-sm;
+    animation: slideIn $transition-normal ease-out;
+    word-wrap: break-word;
+    word-break: break-all;
+    position: relative;
+    overflow: hidden;
+
+    // 添加光泽效果
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    &:hover::before {
+      left: 100%;
+    }
+
+    // 最后一个元素不添加底部间距
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
