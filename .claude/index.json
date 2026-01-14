@@ -1,0 +1,153 @@
+{
+  "timestamp": "2026-01-14T22:57:31+08:00",
+  "project": "led-torrent",
+  "description": "LED Torrent 一键领种/弃种脚本（Tampermonkey 用户脚本）",
+  "version": "1.7",
+  "language": "TypeScript",
+  "framework": "Vite 7 + vite-plugin-monkey",
+  "modules": [
+    {
+      "name": "src",
+      "path": "src/",
+      "type": "source",
+      "entry": "src/main.ts",
+      "description": "源代码根目录",
+      "status": "scanned",
+      "files": 13,
+      "hasTests": false,
+      "hasConfig": false,
+      "submodules": [
+        "utils",
+        "types",
+        "styles"
+      ]
+    },
+    {
+      "name": "utils",
+      "path": "src/utils/",
+      "type": "library",
+      "description": "工具函数集合",
+      "status": "scanned",
+      "files": 8,
+      "exports": [
+        "api",
+        "request",
+        "common",
+        "sites"
+      ],
+      "keyFunctions": [
+        "loadUserTorrents",
+        "loadPterUserTorrents",
+        "loadSpringsundayUserTorrents",
+        "handleLedTorrent",
+        "handleLedPterTorrent",
+        "handleLedSpringsundayTorrent"
+      ]
+    },
+    {
+      "name": "types",
+      "path": "src/types/",
+      "type": "definitions",
+      "description": "TypeScript 类型定义",
+      "status": "scanned",
+      "files": 2,
+      "exports": [
+        "TorrentDataIdsType",
+        "PTAPI.LedTorrentDetails",
+        "PTAPI.TorrentList"
+      ]
+    },
+    {
+      "name": "styles",
+      "path": "src/styles/",
+      "type": "assets",
+      "description": "SCSS 样式文件",
+      "status": "scanned",
+      "files": 1,
+      "exports": [
+        "led-torrent.scss"
+      ]
+    }
+  ],
+  "siteAdapters": [
+    {
+      "name": "pter",
+      "site": "猫站 (pterclub.com)",
+      "file": "src/utils/sites/pter.ts",
+      "functions": {
+        "load": "loadPterUserTorrents",
+        "handle": "handleLedPterTorrent"
+      },
+      "api": "getNPHPPterUsertorrentlistajax, getNPHPPterLedTorrent"
+    },
+    {
+      "name": "springsunday",
+      "site": "春天站 (springsunday.net)",
+      "file": "src/utils/sites/springsunday.ts",
+      "functions": {
+        "load": "loadSpringsundayUserTorrents",
+        "handle": "handleLedSpringsundayTorrent"
+      },
+      "api": "getNPHPUsertorrentlistajax, getSSDLedTorrent"
+    },
+    {
+      "name": "sch",
+      "site": "学校站 (btschool.club)",
+      "file": "src/utils/sites/sch.ts",
+      "functions": {
+        "load": "loadSchTorrentsHistory"
+      },
+      "api": "getNPHPUsertorrentHistory, getSchLedTorrent"
+    }
+  ],
+  "coverage": {
+    "totalFiles": 13,
+    "scannedFiles": 13,
+    "coveragePercentage": 100,
+    "ignoredPaths": [
+      "node_modules/**",
+      "dist/**",
+      ".git/**",
+      "*.log",
+      "*.lock"
+    ],
+    "truncated": false
+  },
+  "gaps": [
+    {
+      "type": "tests",
+      "description": "无测试覆盖",
+      "severity": "medium",
+      "recommendation": "为核心功能（API 请求、DOM 解析）添加单元测试"
+    },
+    {
+      "type": "errorHandling",
+      "description": "部分 API 调用失败时缺少重试机制",
+      "severity": "low",
+      "recommendation": "添加请求重试和更完善的错误处理"
+    },
+    {
+      "type": "internationalization",
+      "description": "仅支持简体中文界面",
+      "severity": "low",
+      "recommendation": "添加多语言支持（英文、繁体中文等）"
+    }
+  ],
+  "nextSteps": [
+    "添加单元测试框架（Vitest）",
+    "完善错误处理和重试机制",
+    "添加配置文件支持（允许用户自定义按钮位置、颜色等）",
+    "优化大量种子处理时的性能（添加并发控制）",
+    "添加更多站点适配器"
+  ],
+  "documentation": {
+    "root": "CLAUDE.md",
+    "modules": [
+      "src/CLAUDE.md",
+      "src/utils/CLAUDE.md",
+      "src/types/CLAUDE.md",
+      "src/styles/CLAUDE.md"
+    ],
+    "lastUpdated": "2026-01-14T22:57:31+08:00"
+  }
+}
