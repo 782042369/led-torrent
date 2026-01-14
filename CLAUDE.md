@@ -5,6 +5,7 @@
 ## 变更记录
 
 ### 2026-01-14
+
 - 初始化 AI 上下文文档
 - 完成项目架构分析与模块文档生成
 - 生成模块级 CLAUDE.md 文档
@@ -16,6 +17,7 @@
 LED Torrent 是一个专为 PT（Private Tracker）站点设计的浏览器用户脚本，旨在简化用户在多个 PT 站点上的种子管理操作。通过自动化领种和弃种流程，帮助用户快速管理大量种子，提升使用体验。
 
 **核心目标**：
+
 - 支持多个主流 PT 站点的一键操作
 - 提供友好的用户界面和实时反馈
 - 保持轻量级和高性能
@@ -62,7 +64,6 @@ graph TD
 
     D2 --> D21["pter.ts - 猫站"]
     D2 --> D22["springsunday.ts - 春天站"]
-    D2 --> D23["sch.ts - 学校站"]
 
     click C "#src-模块" "查看主入口文档"
     click D "#utils-模块" "查看工具函数文档"
@@ -74,20 +75,19 @@ graph TD
 
 ## 模块索引
 
-| 模块路径 | 职责描述 | 语言 | 状态 |
-|---------|---------|------|------|
-| [src/](./src/CLAUDE.md) | 源代码根目录，包含所有前端代码 | TypeScript | ✅ 已扫描 |
-| [src/main.ts](./src/CLAUDE.md#入口与启动) | 主入口，UI 初始化与路由分发 | TypeScript | ✅ 已扫描 |
-| [src/utils/](./src/utils/CLAUDE.md) | 工具函数集合，核心业务逻辑 | TypeScript | ✅ 已扫描 |
-| [src/utils/api.ts](./src/utils/CLAUDE.md#2-api-接口模块-apits) | PT 站点 API 接口封装 | TypeScript | ✅ 已扫描 |
-| [src/utils/request.ts](./src/utils/CLAUDE.md#1-http-请求模块-requestts) | HTTP 请求封装（带超时） | TypeScript | ✅ 已扫描 |
-| [src/utils/common/](./src/utils/CLAUDE.md#3-通用站点处理-commonsitts) | 通用工具函数（URL 解析、DOM 检查等） | TypeScript | ✅ 已扫描 |
-| [src/utils/sites/](./src/utils/CLAUDE.md#4-站点适配器-sites) | 各站点适配器实现 | TypeScript | ✅ 已扫描 |
-| [src/utils/sites/pter.ts](./src/utils/CLAUDE.md#猫站适配器-pterts) | 猫站（pterclub.com）适配 | TypeScript | ✅ 已扫描 |
-| [src/utils/sites/springsunday.ts](./src/utils/CLAUDE.md#春天站适配器-springsundayts) | 春天站（springsunday.net）适配 | TypeScript | ✅ 已扫描 |
-| [src/utils/sites/sch.ts](./src/utils/CLAUDE.md#学校站适配器-schts) | 学校站（btschool.club）适配 | TypeScript | ✅ 已扫描 |
-| [src/types/](./src/types/CLAUDE.md) | TypeScript 类型定义 | TypeScript | ✅ 已扫描 |
-| [src/styles/](./src/styles/CLAUDE.md) | SCSS 样式文件 | SCSS | ✅ 已扫描 |
+| 模块路径                                                                             | 职责描述                             | 语言       | 状态      |
+| ------------------------------------------------------------------------------------ | ------------------------------------ | ---------- | --------- |
+| [src/](./src/CLAUDE.md)                                                              | 源代码根目录，包含所有前端代码       | TypeScript | ✅ 已扫描 |
+| [src/main.ts](./src/CLAUDE.md#入口与启动)                                            | 主入口，UI 初始化与路由分发          | TypeScript | ✅ 已扫描 |
+| [src/utils/](./src/utils/CLAUDE.md)                                                  | 工具函数集合，核心业务逻辑           | TypeScript | ✅ 已扫描 |
+| [src/utils/api.ts](./src/utils/CLAUDE.md#2-api-接口模块-apits)                       | PT 站点 API 接口封装                 | TypeScript | ✅ 已扫描 |
+| [src/utils/request.ts](./src/utils/CLAUDE.md#1-http-请求模块-requestts)              | HTTP 请求封装（带超时）              | TypeScript | ✅ 已扫描 |
+| [src/utils/common/](./src/utils/CLAUDE.md#3-通用站点处理-commonsitts)                | 通用工具函数（URL 解析、DOM 检查等） | TypeScript | ✅ 已扫描 |
+| [src/utils/sites/](./src/utils/CLAUDE.md#4-站点适配器-sites)                         | 各站点适配器实现                     | TypeScript | ✅ 已扫描 |
+| [src/utils/sites/pter.ts](./src/utils/CLAUDE.md#猫站适配器-pterts)                   | 猫站（pterclub.com）适配             | TypeScript | ✅ 已扫描 |
+| [src/utils/sites/springsunday.ts](./src/utils/CLAUDE.md#春天站适配器-springsundayts) | 春天站（springsunday.net）适配       | TypeScript | ✅ 已扫描 |
+| [src/types/](./src/types/CLAUDE.md)                                                  | TypeScript 类型定义                  | TypeScript | ✅ 已扫描 |
+| [src/styles/](./src/styles/CLAUDE.md)                                                | SCSS 样式文件                        | SCSS       | ✅ 已扫描 |
 
 ---
 
@@ -205,6 +205,7 @@ pnpm lint
 **参考指南**：[utils 模块文档 - 常见问题](./src/utils/CLAUDE.md#q1-如何添加新站点支持)
 
 **步骤**：
+
 1. 在 `src/utils/sites/` 下创建新文件
 2. 实现 `load*UserTorrents` 和 `handleLed*Torrent` 函数
 3. 在 `src/utils/api.ts` 中添加站点特定的 API 调用函数
@@ -212,6 +213,7 @@ pnpm lint
 5. 在 `src/utils/index.ts` 中导出新函数
 
 **示例结构**：
+
 ```typescript
 // src/utils/sites/newsite.ts
 export async function loadNewSiteUserTorrents(
@@ -241,6 +243,7 @@ export async function handleLedNewSiteTorrent(
 **参考指南**：[styles 模块文档](./src/styles/CLAUDE.md)
 
 **可修改项**：
+
 - 按钮颜色和尺寸
 - 容器位置和布局
 - 消息列表样式
@@ -251,6 +254,7 @@ export async function handleLedNewSiteTorrent(
 **参考指南**：[utils 模块文档 - request.ts](./src/utils/CLAUDE.md#1-http-请求模块-requestts)
 
 **改进方向**：
+
 - 完善各个 API 调用的错误处理
 - 添加请求重试机制
 - 提供更友好的用户提示
@@ -258,6 +262,7 @@ export async function handleLedNewSiteTorrent(
 #### 4. 性能优化
 
 **优化方向**：
+
 - 优化大量种子处理的并发控制
 - 添加请求节流和防抖
 - 减少不必要的 DOM 操作
@@ -271,6 +276,7 @@ export async function handleLedNewSiteTorrent(
 **位置**：`src/main.ts`
 
 **职责**：
+
 - 所有 UI 初始化
 - 站点 URL 路由判断
 - 事件监听器绑定
@@ -280,6 +286,7 @@ export async function handleLedNewSiteTorrent(
 **位置**：`src/utils/api.ts`
 
 **包含**：
+
 - 所有 PT 站点的 API 接口定义
 - 请求参数和响应类型
 
@@ -288,6 +295,7 @@ export async function handleLedNewSiteTorrent(
 **位置**：`src/utils/request.ts`
 
 **特性**：
+
 - 统一的 HTTP 请求方法
 - 支持超时控制（默认 100 秒）
 - 特殊响应处理
@@ -297,6 +305,7 @@ export async function handleLedNewSiteTorrent(
 **位置**：`src/utils/sites/`
 
 **功能**：
+
 - 各站点的 DOM 解析逻辑
 - 站点特定的领种/弃种处理
 
@@ -307,11 +316,13 @@ export async function handleLedNewSiteTorrent(
 #### 添加新站点支持的标准流程
 
 1. **创建站点适配器文件**
+
    ```bash
    src/utils/sites/newsite.ts
    ```
 
 2. **实现两个核心函数**
+
    ```typescript
    // 加载用户种子数据
    loadNewSiteUserTorrents(userid, allData, ledlist)
@@ -321,6 +332,7 @@ export async function handleLedNewSiteTorrent(
    ```
 
 3. **添加 API 接口**
+
    ```typescript
    // src/utils/api.ts
    export async function getNewSiteApi(params) { ... }
@@ -328,6 +340,7 @@ export async function handleLedNewSiteTorrent(
    ```
 
 4. **更新路由配置**
+
    ```typescript
    // src/main.ts
    if (location.href.includes('newsite.com/userdetails.php')) {
@@ -383,12 +396,11 @@ export async function handleLedNewSiteTorrent(
 
 ## 支持的站点
 
-| 站点名称 | 域名 | 适配器文件 | 状态 |
-|---------|------|-----------|------|
-| 猫站 | pterclub.com | `pter.ts` | ✅ 已支持 |
-| 春天站 | springsunday.net | `springsunday.ts` | ✅ 已支持 |
-| 学校站 | btschool.club | `sch.ts` | ✅ 已支持 |
-| 通用站点 | * (Nexus PHP) | `site.ts` | ✅ 已支持 |
+| 站点名称 | 域名             | 适配器文件        | 状态      |
+| -------- | ---------------- | ----------------- | --------- |
+| 猫站     | pterclub.com     | `pter.ts`         | ✅ 已支持 |
+| 春天站   | springsunday.net | `springsunday.ts` | ✅ 已支持 |
+| 通用站点 | \* (Nexus PHP)   | `site.ts`         | ✅ 已支持 |
 
 ---
 
@@ -418,7 +430,6 @@ src/
 │   └── sites/
 │       ├── pter.ts           # 猫站适配器（83 行）
 │       ├── springsunday.ts   # 春天站适配器（85 行）
-│       └── sch.ts            # 学校站适配器（63 行）
 ├── types/
 │   ├── api.d.ts              # API 类型定义（25 行）
 │   └── index.d.ts            # 通用类型定义（3 行）

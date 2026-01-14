@@ -31,6 +31,11 @@ export default antfu({
     '**/node_modules/**',
     'pnpm-lock.yaml',
     'dist',
+    // 忽略文档文件
+    '*.md',
+    '**/CLAUDE.md',
+    '**/API.md',
+    '**/README*.md',
   ],
   formatters: true,
 })

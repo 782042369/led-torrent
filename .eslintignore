@@ -1,0 +1,5 @@
+# 忽略文档文件
+*.md
+CLAUDE.md
+API.md
+README*.md

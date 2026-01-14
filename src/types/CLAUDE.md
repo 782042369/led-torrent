@@ -27,19 +27,22 @@ types/
 #### TorrentDataIdsType
 
 **定义**：
+
 ```typescript
 export type TorrentDataIdsType = string[]
 ```
 
 **用途**：
+
 - 表示种子 ID 的数组类型
 - 用于批量领种/弃种操作
 - 作为函数参数传递种子列表
 
 **使用场景**：
+
 ```typescript
 // 加载可认领的种子
-let allData: TorrentDataIdsType = []
+const allData: TorrentDataIdsType = []
 
 // 传递给领种函数
 await handleLedTorrent(allData, button, msglist, 'addClaim')
@@ -52,6 +55,7 @@ await handleLedTorrent(allData, button, msglist, 'addClaim')
 #### PTAPI 命名空间
 
 **定义**：
+
 ```typescript
 namespace PTAPI {
   interface TorrentList {
@@ -82,12 +86,14 @@ namespace PTAPI {
 | `ret` | `-1 \| 0` | 返回码（0 成功，-1 失败） |
 
 **使用示例**：
+
 ```typescript
 const result = await getNPHPLedTorrent(id, 'addClaim')
 if (result.ret === 0) {
-  console.log(result.msg)  // 'OK'
-} else {
-  console.error(result.msg)  // 错误信息
+  console.log(result.msg) // 'OK'
+}
+else {
+  console.error(result.msg) // 错误信息
 }
 ```
 
@@ -135,6 +141,7 @@ types/
 ### tsconfig.json 配置
 
 **路径别名**：
+
 ```json
 {
   "compilerOptions": {
@@ -147,6 +154,7 @@ types/
 ```
 
 **使用方式**：
+
 ```typescript
 // 在其他文件中导入
 import type { TorrentDataIdsType } from '@/types'
@@ -171,7 +179,7 @@ async function handleLedTorrent(
   // arr 的类型为 string[]
   // 可以安全地使用数组方法
   for (let i = 0; i < arr.length; i++) {
-    console.log(arr[i])  // 类型为 string
+    console.log(arr[i]) // 类型为 string
   }
 }
 ```
@@ -191,7 +199,7 @@ async function getNPHPLedTorrent(
 
 // 使用时获得类型提示
 const result: PTAPI.LedTorrentDetails = await getNPHPLedTorrent('123', 'addClaim')
-console.log(result.msg)  // IDE 知道这是 string 类型
+console.log(result.msg) // IDE 知道这是 string 类型
 ```
 
 ### 示例 3：类型推断
@@ -203,8 +211,8 @@ const allData: TorrentDataIdsType = []
 const ledlist: string[] = []
 
 // 类型推断确保类型安全
-allData.push('123')  // ✓ 正确
-allData.push(456)    // ✗ TypeScript 错误
+allData.push('123') // ✓ 正确
+allData.push(456) // ✗ TypeScript 错误
 ```
 
 ---
@@ -220,6 +228,7 @@ allData.push(456)    // ✗ TypeScript 错误
 ### 类型检查
 
 运行以下命令进行类型检查：
+
 ```bash
 npx tsc --noEmit
 ```
@@ -242,6 +251,7 @@ npx tsc --noEmit
 ### Q1: 为什么使用 namespace 而不是 export interface？
 
 **答案**：
+
 - `namespace PTAPI` 将相关类型组织在一起
 - 避免全局命名空间污染
 - 与现有代码结构保持一致
@@ -252,6 +262,7 @@ npx tsc --noEmit
 **步骤**：
 
 1. 在 `types/api.d.ts` 中添加类型定义：
+
    ```typescript
    namespace PTAPI {
      interface NewApiResponse {
@@ -262,6 +273,7 @@ npx tsc --noEmit
    ```
 
 2. 在 `types/api.d.ts` 顶部添加 JSDoc 注释：
+
    ```typescript
    /**
     * 新 API 响应类型
@@ -270,6 +282,7 @@ npx tsc --noEmit
    ```
 
 3. 在使用处导入：
+
    ```typescript
    import type { PTAPI } from '@/types/api'
 
@@ -279,12 +292,14 @@ npx tsc --noEmit
 ### Q3: TorrentDataIdsType 为什么不直接使用 string[]？
 
 **答案**：
+
 - 提供语义化类型名称
 - 便于未来扩展（如添加约束或方法）
 - 提高代码可读性
 - 统一项目中的类型使用
 
 **对比**：
+
 ```typescript
 // 不推荐
 async function load(ids: string[]) { ... }
@@ -311,12 +326,14 @@ async function load(ids: TorrentDataIdsType) { ... }
 ### 1. 类型导入
 
 **推荐**：
+
 ```typescript
 // 使用 type 关键字导入
 import type { TorrentDataIdsType } from '@/types'
 ```
 
 **不推荐**：
+
 ```typescript
 // 混合值导入
 import { TorrentDataIdsType } from '@/types'
@@ -325,6 +342,7 @@ import { TorrentDataIdsType } from '@/types'
 ### 2. 类型导出
 
 **推荐**：
+
 ```typescript
 // 在 types/index.d.ts 中集中导出
 export type { TorrentDataIdsType }
@@ -333,6 +351,7 @@ export type { TorrentDataIdsType }
 ### 3. 类型注释
 
 **推荐**：
+
 ```typescript
 /**
  * 领种操作响应
@@ -350,6 +369,7 @@ interface LedTorrentDetails {
 ## 变更记录
 
 ### 2026-01-14
+
 - 初始化 types 模块文档
 - 完成类型定义详解
 - 补充使用示例和最佳实践

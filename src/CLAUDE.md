@@ -35,6 +35,7 @@ src/
 **文件路径**：`main.ts`
 
 **职责**：
+
 - 脚本初始化和 UI 渲染
 - 根据当前 URL 判断所在站点并分发处理逻辑
 - 创建操作按钮和状态显示区域
@@ -43,6 +44,7 @@ src/
 **核心流程**：
 
 1. **UI 初始化**
+
    ```typescript
    const button = document.createElement('button')
    const ulbox = document.createElement('ul')
@@ -50,12 +52,15 @@ src/
    ```
 
 2. **站点路由判断**
+
    ```typescript
    if (location.href.includes('pterclub.com/getusertorrentlist.php')) {
      // 猫站领取种子
-   } else if (location.href.includes('springsunday.net/userdetails.php')) {
+   }
+   else if (location.href.includes('springsunday.net/userdetails.php')) {
      // 春天站领取种子
-   } else if (location.href.includes('pt.btschool.club/userdetails.php')) {
+   }
+   else if (location.href.includes('pt.btschool.club/userdetails.php')) {
      // 学校站领取种子
    }
    ```
@@ -73,17 +78,17 @@ src/
 
 从 `@/utils` 导出以下核心函数：
 
-| 函数名 | 用途 | 定义位置 |
-|--------|------|----------|
-| `loadUserTorrents` | 加载通用站点用户做种数据 | `utils/common/site.ts` |
-| `loadPterUserTorrents` | 加载猫站用户做种数据 | `utils/sites/pter.ts` |
-| `loadSpringsundayUserTorrents` | 加载春天站用户做种数据 | `utils/sites/springsunday.ts` |
-| `handleLedTorrent` | 处理通用站点领种/弃种 | `utils/common/site.ts` |
-| `handleLedPterTorrent` | 处理猫站领种 | `utils/sites/pter.ts` |
-| `handleLedSpringsundayTorrent` | 处理春天站领种 | `utils/sites/springsunday.ts` |
-| `getLedMsg` | 生成提示信息 | `utils/index.ts` |
-| `animateButton` | 按钮动画效果 | `utils/index.ts` |
-| `getvl` | 解析 URL 参数 | `utils/index.ts` |
+| 函数名                         | 用途                     | 定义位置                      |
+| ------------------------------ | ------------------------ | ----------------------------- |
+| `loadUserTorrents`             | 加载通用站点用户做种数据 | `utils/common/site.ts`        |
+| `loadPterUserTorrents`         | 加载猫站用户做种数据     | `utils/sites/pter.ts`         |
+| `loadSpringsundayUserTorrents` | 加载春天站用户做种数据   | `utils/sites/springsunday.ts` |
+| `handleLedTorrent`             | 处理通用站点领种/弃种    | `utils/common/site.ts`        |
+| `handleLedPterTorrent`         | 处理猫站领种             | `utils/sites/pter.ts`         |
+| `handleLedSpringsundayTorrent` | 处理春天站领种           | `utils/sites/springsunday.ts` |
+| `getLedMsg`                    | 生成提示信息             | `utils/index.ts`              |
+| `animateButton`                | 按钮动画效果             | `utils/index.ts`              |
+| `getvl`                        | 解析 URL 参数            | `utils/index.ts`              |
 
 ---
 
@@ -92,6 +97,7 @@ src/
 ### 运行时依赖
 
 本项目**无运行时依赖**，纯使用浏览器原生 API：
+
 - `fetch` - HTTP 请求
 - `DOMParser` - HTML 解析
 - `URLSearchParams` - URL 参数解析
@@ -108,6 +114,7 @@ src/
 ### 构建配置
 
 **Vite 配置** (`vite.config.ts`)：
+
 ```typescript
 {
   entry: 'src/main.ts',
@@ -144,8 +151,8 @@ export type TorrentDataIdsType = string[]
 ```typescript
 namespace PTAPI {
   interface LedTorrentDetails {
-    msg: string | 'OK'  // 操作结果消息
-    ret: -1 | 0         // 返回码
+    msg: string | 'OK' // 操作结果消息
+    ret: -1 | 0 // 返回码
   }
 }
 ```
@@ -186,6 +193,7 @@ namespace PTAPI {
 
 1. 在 `src/utils/sites/` 下创建新文件（如 `newsite.ts`）
 2. 实现两个核心函数：
+
    ```typescript
    export async function loadNewSiteUserTorrents(
      userid: string,
@@ -199,6 +207,7 @@ namespace PTAPI {
      json: { [key in string]: number }
    )
    ```
+
 3. 在 `src/utils/api.ts` 中添加站点特定的 API 函数
 4. 在 `src/main.ts` 中添加 URL 路由判断
 5. 在 `src/utils/index.ts` 中导出新函数
@@ -206,6 +215,7 @@ namespace PTAPI {
 ### Q2: 按钮不显示怎么办？
 
 检查：
+
 1. 当前 URL 是否在 `vite.config.ts` 的 `match` 配置中
 2. 浏览器控制台是否有错误
 3. Tampermonkey 脚本是否已启用
@@ -257,5 +267,6 @@ namespace PTAPI {
 ## 变更记录
 
 ### 2026-01-14
+
 - 初始化 src 模块文档
 - 完成架构分析与文件清单整理
