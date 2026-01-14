@@ -2,14 +2,16 @@
  * @Author: yanghongxuan
  * @Date: 2024-12-23 12:50:14
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2026-01-14 23:15:00
- * @Description: Pter 站点适配器 - 使用基类重构
+ * @LastEditTime: 2026-01-14 23:45:00
+ * @Description: Pter 站点适配器 - 适配猫站（pterclub.com）
  */
 
-import type { TorrentDataIdsType } from '@/types'
+import type { TorrentDataIdsType } from '@/core/types'
 
-import { getNPHPPterLedTorrent, getNPHPPterUsertorrentlistajax } from '../api'
-import { UIManager } from '../dom'
+import { getNPHPPterLedTorrent, getNPHPPterUsertorrentlistajax } from '@/core/api'
+
+import type { UIManager } from './base'
+
 import { BaseSiteAdapter, DOMHelper } from './base'
 
 /**
@@ -65,8 +67,8 @@ class PterSiteAdapter extends BaseSiteAdapter {
       const data = await getNPHPPterLedTorrent(id)
       return data ? '领取成功' : '领取失败'
     }
-    catch (error) {
-      console.error('handleLedPterTorrent error: ', error)
+    catch {
+      console.error('handleLedPterTorrent error: ')
       return '领取失败'
     }
   }
@@ -104,7 +106,27 @@ export async function handleLedPterTorrent(
   button: HTMLButtonElement,
   json: { [key in string]: number },
 ): Promise<void> {
+  // 临时创建简单的 UIManager（后续会迁移到 ui/ 目录）
   const messageList = button.nextElementSibling as HTMLUListElement
-  const ui = new UIManager(button, messageList)
+  const ui: UIManager = {
+    updateButton: (text: string) => { button.textContent = text },
+    updateProgress: (current: number, total: number) => {
+      button.textContent = `努力再努力 ${total} / ${current}`
+    },
+    addMessage: (message: string) => {
+      const li = document.createElement('li')
+      li.textContent = message
+      messageList.appendChild(li)
+    },
+    flush: () => {},
+    clearMessages: () => { messageList.innerHTML = '' },
+    showStats: (stats: Record<string, number>) => {
+      messageList.innerHTML = Object.entries(stats)
+        .map(([key, value]) => `<li>${key}: ${value}</li>`)
+        .join('')
+    },
+    setDisabled: (disabled: boolean) => { button.disabled = disabled },
+  }
+
   await pterAdapter.handleLedTorrent(arr, ui, json)
 }

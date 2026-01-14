@@ -2,14 +2,16 @@
  * @Author: yanghongxuan
  * @Date: 2023-11-01 12:15:00
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2024-04-02 16:18:38
+ * @LastEditTime: 2026-01-14 23:58:00
  * @Description: API 接口定义 - 包含各个PT站点的API接口
  */
+
+import type { LedTorrentDetails } from './types'
 
 import request from './request'
 
 /**
- * 执行认领或弃种操作
+ * 执行认领或弃种操作（通用站点 - Nexus PHP）
  *
  * @param id - 种子ID
  * @param type - 操作类型，'addClaim'为认领，'removeClaim'为弃种
@@ -28,20 +30,20 @@ export function getNPHPLedTorrent(
     body.append('action', 'removeClaim')
     body.append('params[id]', `${id}`)
   }
-  return request<PTAPI.LedTorrentDetails>(`/ajax.php`, {
+  return request<LedTorrentDetails>(`/ajax.php`, {
     method: 'POST',
     body,
   })
 }
 
 /**
- * 获取用户种子详情
+ * 获取用户种子详情（通用站点 - Nexus PHP）
  *
  * @param params - 请求参数对象
  * @param params.page - 页码
  * @param params.userid - 用户ID
  * @param params.type - 类型，固定为'seeding'
- * @returns 返回用户种子详情的字符串响应
+ * @returns 返回用户种子详情的字符串响应（HTML）
  */
 export async function getNPHPUsertorrentlistajax(
   params: {
@@ -60,12 +62,12 @@ export async function getNPHPUsertorrentlistajax(
 }
 
 /**
- * 获取用户领取过的种子详情
+ * 获取用户领取过的种子详情（通用站点 - Nexus PHP）
  *
  * @param params - 请求参数对象
  * @param params.page - 页码
  * @param params.uid - 用户ID
- * @returns 返回用户领取过的种子详情的字符串响应
+ * @returns 返回用户领取过的种子详情的字符串响应（HTML）
  */
 export async function getNPHPUsertorrentHistory(
   params: {
@@ -78,14 +80,15 @@ export async function getNPHPUsertorrentHistory(
     params,
   })
 }
+
 /**
- * 获取Pter站点用户种子列表
+ * 获取猫站（pterclub.com）用户种子列表
  *
  * @param params - 请求参数对象
  * @param params.page - 页码
  * @param params.userid - 用户ID
  * @param params.type - 类型，固定为'seeding'
- * @returns 返回Pter站点用户种子列表的字符串响应
+ * @returns 返回猫站用户种子列表的字符串响应（HTML）
  */
 export async function getNPHPPterUsertorrentlistajax(
   params: {
@@ -102,8 +105,9 @@ export async function getNPHPPterUsertorrentlistajax(
     },
   )
 }
+
 /**
- * Pter站点领取种子
+ * 猫站（pterclub.com）领取种子
  *
  * @param id - 种子ID
  * @returns 返回领取操作的结果布尔值
@@ -120,7 +124,7 @@ export function getNPHPPterLedTorrent(
 }
 
 /**
- * Springsunday站点认领种子
+ * 春天站（springsunday.net）认领种子
  *
  * @param id - 种子ID
  * @returns 返回认领操作的结果详情
@@ -131,7 +135,7 @@ export function getSSDLedTorrent(
   const body = new FormData()
   body.append('action', 'add')
   body.append('id', `${id}`)
-  return request<PTAPI.LedTorrentDetails>(`/adopt.php`, {
+  return request<LedTorrentDetails>(`/adopt.php`, {
     method: 'POST',
     body,
   })

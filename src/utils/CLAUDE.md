@@ -23,7 +23,6 @@ utils/
 └── sites/                # 各站点适配器实现
     ├── pter.ts           # 猫站（pterclub.com）
     ├── springsunday.ts   # 春天站（springsunday.net）
-    └── sch.ts            # 学校站（btschool.club）
 ```
 
 ---
@@ -35,6 +34,7 @@ utils/
 **文件路径**：`utils/index.ts`
 
 **职责**：
+
 - 统一导出所有工具函数
 - 提供全局辅助函数（URL 参数解析、分页检测、按钮动画、消息拼接）
 
@@ -50,10 +50,10 @@ export * from './sites/pter'
 export * from './sites/springsunday'
 
 // 全局辅助函数
-export function getvl(name: string)                    // 解析 URL 参数
-export function checkForNextPage(doc, selector)        // 检测分页
-export function animateButton(e)                       // 按钮动画
-export function getLedMsg(msglist)                     // 拼接消息
+export function getvl(name: string) // 解析 URL 参数
+export function checkForNextPage(doc, selector) // 检测分页
+export function animateButton(e) // 按钮动画
+export function getLedMsg(msglist) // 拼接消息
 ```
 
 ---
@@ -67,12 +67,14 @@ export function getLedMsg(msglist)                     // 拼接消息
 **`request<T>(url, options)`**
 
 统一的 HTTP 请求函数，支持：
+
 - GET/POST 请求
 - 超时控制（默认 100 秒）
 - 自动处理查询参数
 - 特殊响应处理（文本/JSON）
 
 **签名**：
+
 ```typescript
 async function request<T>(
   url: string,
@@ -89,6 +91,7 @@ interface RequestOptions {
 ```
 
 **特性**：
+
 - 使用 `Promise.race` 实现超时机制
 - 自动构建 URL 查询参数
 - 针对不同接口的特殊响应处理
@@ -104,6 +107,7 @@ interface RequestOptions {
 认领或弃种操作。
 
 **参数**：
+
 - `id: string` - 种子 ID
 - `type: 'removeClaim' | 'addClaim'` - 操作类型
 
@@ -114,6 +118,7 @@ interface RequestOptions {
 获取用户做种列表。
 
 **参数**：
+
 ```typescript
 {
   page: number
@@ -129,6 +134,7 @@ interface RequestOptions {
 获取用户历史领种记录。
 
 **参数**：
+
 ```typescript
 {
   page: number
@@ -158,11 +164,9 @@ interface RequestOptions {
 
 **返回**：`Promise<PTAPI.LedTorrentDetails>`
 
-#### 学校站 API
 
 ##### `getSchLedTorrent(id)`
 
-学校站认领种子。
 
 **返回**：`Promise<PTAPI.LedTorrentDetails>`
 
@@ -175,12 +179,14 @@ interface RequestOptions {
 批量处理领种/弃种操作。
 
 **参数**：
+
 - `arr: TorrentDataIdsType` - 种子 ID 数组
 - `button: HTMLButtonElement` - 按钮元素（显示进度）
 - `json: Record<string, number>` - 结果统计
 - `type: 'removeClaim' | 'addClaim'` - 操作类型
 
 **流程**：
+
 1. 遍历种子数组
 2. 逐个调用 API
 3. 更新按钮进度显示
@@ -191,10 +197,12 @@ interface RequestOptions {
 加载用户当前做种数据。
 
 **返回值填充**：
+
 - `allData` - 可认领的种子 ID
 - `ledlist` - 已认领的种子 ID
 
 **实现细节**：
+
 - 支持分页加载（使用 `checkForNextPage`）
 - DOM 解析提取按钮状态
 - 根据按钮文本判断是否可认领
@@ -222,6 +230,7 @@ interface RequestOptions {
    - 根据返回值判断成功/失败
 
 **站点特点**：
+
 - 使用特殊的数据 URL 结构
 - 返回布尔值而非标准响应
 
@@ -239,10 +248,10 @@ interface RequestOptions {
    - 根据返回值判断成功/失败
 
 **站点特点**：
+
 - 使用标准 PT API 格式
 - 按钮文本为中文
 
-#### 学校站适配器 (`sch.ts`)
 
 **核心函数**：
 
@@ -252,6 +261,7 @@ interface RequestOptions {
    - 提取 `data-torrent_id` 和 `data-claim_id`
 
 **站点特点**：
+
 - 与通用站点类似
 - 仅提供历史记录加载函数
 
@@ -287,20 +297,20 @@ utils/index.ts
 
 ### 输入数据
 
-| 类型 | 用途 |
-|------|------|
-| `TorrentDataIdsType` | 种子 ID 数组（`string[]`） |
-| `userid: string` | 用户 ID |
-| `button: HTMLButtonElement` | 操作按钮元素 |
-| `json: Record<string, number>` | 结果统计对象 |
+| 类型                           | 用途                       |
+| ------------------------------ | -------------------------- |
+| `TorrentDataIdsType`           | 种子 ID 数组（`string[]`） |
+| `userid: string`               | 用户 ID                    |
+| `button: HTMLButtonElement`    | 操作按钮元素               |
+| `json: Record<string, number>` | 结果统计对象               |
 
 ### 输出数据
 
-| 类型 | 说明 |
-|------|------|
+| 类型                      | 说明                                       |
+| ------------------------- | ------------------------------------------ |
 | `PTAPI.LedTorrentDetails` | API 响应（`{ msg: string, ret: number }`） |
-| `boolean` | 成功/失败标识 |
-| `string` | HTML 文本响应 |
+| `boolean`                 | 成功/失败标识                              |
+| `string`                  | HTML 文本响应                              |
 
 ---
 
@@ -315,6 +325,7 @@ utils/index.ts
 ### 代码规范
 
 遵循 **@antfu/eslint-config**：
+
 - 2 空格缩进
 - 单引号
 - 无分号
@@ -340,6 +351,7 @@ utils/index.ts
 **步骤**：
 
 1. 创建 `sites/newsite.ts`：
+
    ```typescript
    export async function loadNewSiteUserTorrents(
      userid: string,
@@ -405,7 +417,6 @@ utils/index.ts
 - `utils/common/site.ts` - 138 行
 - `utils/sites/pter.ts` - 83 行
 - `utils/sites/springsunday.ts` - 85 行
-- `utils/sites/sch.ts` - 63 行
 
 **总计**：728 行代码
 
@@ -414,6 +425,7 @@ utils/index.ts
 ## 变更记录
 
 ### 2026-01-14
+
 - 初始化 utils 模块文档
 - 完成接口文档与依赖关系图
 - 补充站点适配器开发指南
