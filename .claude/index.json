@@ -1,153 +1,263 @@
 {
-  "timestamp": "2026-01-14T22:57:31+08:00",
-  "project": "led-torrent",
-  "description": "LED Torrent 一键领种/弃种脚本（Tampermonkey 用户脚本）",
+  "lastUpdated": "2026-01-15T00:13:34.000Z",
+  "projectPath": "E:\\工作\\study\\led-torrent",
+  "projectName": "LED Torrent",
+  "projectDescription": "一键领种/弃种脚本 - 为 PT 站点提供一键领种、一键弃种功能的 Tampermonkey 用户脚本",
   "version": "1.7",
-  "language": "TypeScript",
-  "framework": "Vite 7 + vite-plugin-monkey",
+  "scanSummary": {
+    "totalFiles": 35,
+    "scannedFiles": 35,
+    "coveragePercentage": 100,
+    "truncated": false
+  },
+  "ignoreRules": [
+    "node_modules/**",
+    ".git/**",
+    ".github/**",
+    "dist/**",
+    "build/**",
+    ".next/**",
+    "__pycache__/**",
+    "*.lock",
+    "*.log",
+    "*.bin",
+    "*.pdf",
+    "*.png",
+    "*.jpg",
+    "*.jpeg",
+    "*.gif",
+    "*.mp4",
+    "*.zip",
+    "*.tar",
+    "*.gz"
+  ],
   "modules": [
     {
-      "name": "src",
-      "path": "src/",
-      "type": "source",
-      "entry": "src/main.ts",
-      "description": "源代码根目录",
-      "status": "scanned",
-      "files": 13,
-      "hasTests": false,
-      "hasConfig": false,
-      "submodules": [
-        "utils",
-        "types",
-        "styles"
-      ]
-    },
-    {
-      "name": "utils",
-      "path": "src/utils/",
-      "type": "library",
-      "description": "工具函数集合",
-      "status": "scanned",
-      "files": 8,
-      "exports": [
-        "api",
-        "request",
-        "common",
-        "sites"
+      "path": "src/main.ts",
+      "name": "应用启动入口",
+      "type": "entry",
+      "language": "TypeScript",
+      "lines": 17,
+      "description": "应用启动入口，初始化路由和样式",
+      "status": "refactored",
+      "dependencies": [
+        "@/router",
+        "@/styles/led-torrent.scss"
       ],
-      "keyFunctions": [
-        "loadUserTorrents",
-        "loadPterUserTorrents",
-        "loadSpringsundayUserTorrents",
-        "handleLedTorrent",
-        "handleLedPterTorrent",
-        "handleLedSpringsundayTorrent"
-      ]
+      "exports": []
     },
     {
-      "name": "types",
-      "path": "src/types/",
-      "type": "definitions",
-      "description": "TypeScript 类型定义",
-      "status": "scanned",
-      "files": 2,
+      "path": "src/router",
+      "name": "路由系统",
+      "type": "module",
+      "language": "TypeScript",
+      "lines": 282,
+      "description": "路由系统，负责 URL 匹配和事件处理",
+      "status": "new",
+      "submodules": [
+        "src/router/index.ts",
+        "src/router/routes.ts"
+      ],
       "exports": [
-        "TorrentDataIdsType",
-        "PTAPI.LedTorrentDetails",
-        "PTAPI.TorrentList"
+        "initApp",
+        "ROUTES",
+        "RouteConfig",
+        "RouteAction"
       ]
     },
     {
-      "name": "styles",
-      "path": "src/styles/",
-      "type": "assets",
+      "path": "src/adapters",
+      "name": "站点适配器",
+      "type": "module",
+      "language": "TypeScript",
+      "lines": 687,
+      "description": "站点适配器，实现各站点的业务逻辑",
+      "status": "refactored",
+      "submodules": [
+        "src/adapters/base.ts",
+        "src/adapters/common.ts",
+        "src/adapters/pter.ts",
+        "src/adapters/springsunday.ts"
+      ],
+      "exports": [
+        "ISiteAdapter",
+        "BaseSiteAdapter",
+        "DOMHelper",
+        "handleLedTorrent",
+        "loadUserTorrents",
+        "loadUserTorrentsHistory",
+        "handleLedPterTorrent",
+        "loadPterUserTorrents",
+        "handleLedSpringsundayTorrent",
+        "loadSpringsundayUserTorrents"
+      ]
+    },
+    {
+      "path": "src/core",
+      "name": "核心基础设施",
+      "type": "module",
+      "language": "TypeScript",
+      "lines": 495,
+      "description": "核心基础设施，提供底层能力",
+      "status": "new",
+      "submodules": [
+        "src/core/api.ts",
+        "src/core/request.ts",
+        "src/core/concurrent.ts",
+        "src/core/types.ts"
+      ],
+      "exports": [
+        "getNPHPLedTorrent",
+        "getNPHPUsertorrentlistajax",
+        "getNPHPUsertorrentHistory",
+        "getNPHPPterUsertorrentlistajax",
+        "getNPHPPterLedTorrent",
+        "getSSDLedTorrent",
+        "request",
+        "ConcurrentPool",
+        "RateLimiter",
+        "BatchTaskExecutor",
+        "createDefaultExecutor",
+        "TorrentDataIdsType",
+        "TorrentList",
+        "LedTorrentDetails",
+        "RequestOptions"
+      ]
+    },
+    {
+      "path": "src/ui",
+      "name": "UI 组件",
+      "type": "module",
+      "language": "TypeScript",
+      "lines": 225,
+      "description": "UI 组件，统一管理界面",
+      "status": "new",
+      "submodules": [
+        "src/ui/index.ts",
+        "src/ui/components.ts"
+      ],
+      "exports": [
+        "ButtonAnimator",
+        "UICreator",
+        "UIManager"
+      ]
+    },
+    {
+      "path": "src/utils",
+      "name": "工具函数库",
+      "type": "module",
+      "language": "TypeScript",
+      "lines": 84,
+      "description": "工具函数库，纯函数集合",
+      "status": "refactored",
+      "submodules": [
+        "src/utils/dom.ts",
+        "src/utils/format.ts",
+        "src/utils/url.ts"
+      ],
+      "exports": [
+        "checkForNextPage",
+        "getLedMsg",
+        "getvl"
+      ]
+    },
+    {
+      "path": "src/styles",
+      "name": "样式文件",
+      "type": "module",
+      "language": "SCSS",
+      "lines": 212,
       "description": "SCSS 样式文件",
       "status": "scanned",
-      "files": 1,
-      "exports": [
-        "led-torrent.scss"
+      "submodules": [
+        "src/styles/led-torrent.scss"
       ]
-    }
-  ],
-  "siteAdapters": [
-    {
-      "name": "pter",
-      "site": "猫站 (pterclub.com)",
-      "file": "src/utils/sites/pter.ts",
-      "functions": {
-        "load": "loadPterUserTorrents",
-        "handle": "handleLedPterTorrent"
-      },
-      "api": "getNPHPPterUsertorrentlistajax, getNPHPPterLedTorrent"
-    },
-    {
-      "name": "springsunday",
-      "site": "春天站 (springsunday.net)",
-      "file": "src/utils/sites/springsunday.ts",
-      "functions": {
-        "load": "loadSpringsundayUserTorrents",
-        "handle": "handleLedSpringsundayTorrent"
-      },
-      "api": "getNPHPUsertorrentlistajax, getSSDLedTorrent"
-    },
-    {
-      "name": "sch",
-      "site": "学校站 (btschool.club)",
-      "file": "src/utils/sites/sch.ts",
-      "functions": {
-        "load": "loadSchTorrentsHistory"
-      },
-      "api": "getNPHPUsertorrentHistory, getSchLedTorrent"
     }
   ],
   "coverage": {
-    "totalFiles": 13,
-    "scannedFiles": 13,
-    "coveragePercentage": 100,
-    "ignoredPaths": [
-      "node_modules/**",
-      "dist/**",
-      ".git/**",
-      "*.log",
-      "*.lock"
+    "architecture": "layered",
+    "layers": [
+      {
+        "name": "入口层",
+        "modules": ["src/main.ts"]
+      },
+      {
+        "name": "路由层",
+        "modules": ["src/router"]
+      },
+      {
+        "name": "适配器层",
+        "modules": ["src/adapters"]
+      },
+      {
+        "name": "核心层",
+        "modules": ["src/core"]
+      },
+      {
+        "name": "UI 层",
+        "modules": ["src/ui"]
+      },
+      {
+        "name": "工具层",
+        "modules": ["src/utils"]
+      },
+      {
+        "name": "样式层",
+        "modules": ["src/styles"]
+      }
     ],
-    "truncated": false
+    "gaps": [],
+    "recommendations": [
+      "为核心功能（API 请求、DOM 解析、并发控制）添加单元测试",
+      "添加 Vitest 测试框架",
+      "完善部分 API 响应的类型定义",
+      "添加请求重试机制"
+    ]
   },
-  "gaps": [
+  "supportedSites": [
     {
-      "type": "tests",
-      "description": "无测试覆盖",
-      "severity": "medium",
-      "recommendation": "为核心功能（API 请求、DOM 解析）添加单元测试"
+      "name": "猫站",
+      "domain": "pterclub.com",
+      "adapter": "src/adapters/pter.ts",
+      "status": "supported"
     },
     {
-      "type": "errorHandling",
-      "description": "部分 API 调用失败时缺少重试机制",
-      "severity": "low",
-      "recommendation": "添加请求重试和更完善的错误处理"
+      "name": "春天站",
+      "domain": "springsunday.net",
+      "adapter": "src/adapters/springsunday.ts",
+      "status": "supported"
     },
     {
-      "type": "internationalization",
-      "description": "仅支持简体中文界面",
-      "severity": "low",
-      "recommendation": "添加多语言支持（英文、繁体中文等）"
+      "name": "通用站点",
+      "domain": "* (Nexus PHP)",
+      "adapter": "src/adapters/common.ts",
+      "status": "supported"
     }
   ],
-  "nextSteps": [
-    "添加单元测试框架（Vitest）",
-    "完善错误处理和重试机制",
-    "添加配置文件支持（允许用户自定义按钮位置、颜色等）",
-    "优化大量种子处理时的性能（添加并发控制）",
-    "添加更多站点适配器"
-  ],
+  "techStack": {
+    "language": "TypeScript 5.9+",
+    "buildTool": "Vite 7",
+    "plugin": "vite-plugin-monkey",
+    "stylePreprocessor": "SCSS",
+    "linter": "@antfu/eslint-config",
+    "runtime": "Browser Tampermonkey/Greasemonkey"
+  },
   "documentation": {
     "root": "CLAUDE.md",
     "modules": [
       "src/CLAUDE.md",
+      "src/router/CLAUDE.md",
+      "src/adapters/CLAUDE.md",
+      "src/core/CLAUDE.md",
+      "src/ui/CLAUDE.md",
       "src/utils/CLAUDE.md",
-      "src/types/CLAUDE.md",
       "src/styles/CLAUDE.md"
-    ],
-    "lastUpdated": "2026-01-14T22:57:31+08:00"
-  }
+    ]
+  },
+  "nextSteps": [
+    "添加单元测试（Vitest）",
+    "完善类型定义",
+    "添加请求重试机制",
+    "提取路由配置到独立文件"
+  ]
 }
