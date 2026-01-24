@@ -34,7 +34,7 @@ jobs:
           pnpm install
           pnpm run build
 
-      - name: 发布 npm 包
+      - name: 发布 release 包
         env:
           GITHUB_TOKEN: ${{ secrets.PUBLISH_GH_TOKEN }}
         run: |
