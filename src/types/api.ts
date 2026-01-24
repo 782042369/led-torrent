@@ -3,11 +3,12 @@
  * @Date: 2023-11-01 16:02:41
  * @LastEditors: yanghongxuan
  * @LastEditTime: 2023-11-01 18:57:50
- * @Description:
+ * @Description: PT API 类型定义
  */
-namespace PTAPI {
+
+export namespace PTAPI {
   /** 用户做种列表 */
-  interface TorrentList {
+  export interface TorrentList {
     data?: {
       id: string
     }[]
@@ -16,8 +17,9 @@ namespace PTAPI {
       total: number
     }
   }
+
   /** 领取种子结果详情 */
-  interface LedTorrentDetails {
+  export interface LedTorrentDetails {
     msg: string | 'OK'
     ret: -1 | 0
   }
