@@ -8,6 +8,11 @@
 
 import type { LedTorrentDetails } from '@/types'
 
+import {
+  API_PARAM_VALUES,
+  API_PARAMS,
+  API_PATHS,
+} from './constants'
 import request from './request'
 
 /**
@@ -23,14 +28,14 @@ export function getNPHPLedTorrent(
 ) {
   const body = new FormData()
   if (type === 'addClaim') {
-    body.append('action', 'addClaim')
-    body.append('params[torrent_id]', `${id}`)
+    body.append(API_PARAMS.ACTION, API_PARAM_VALUES.CLAIM)
+    body.append(API_PARAMS.TORRENT_ID_PARAM, `${id}`)
   }
   else {
-    body.append('action', 'removeClaim')
-    body.append('params[id]', `${id}`)
+    body.append(API_PARAMS.ACTION, API_PARAM_VALUES.REMOVE_CLAIM)
+    body.append(API_PARAMS.ID_PARAM, `${id}`)
   }
-  return request<LedTorrentDetails>(`/ajax.php`, {
+  return request<LedTorrentDetails>(API_PATHS.AJAX, {
     method: 'POST',
     body,
   })
@@ -53,7 +58,7 @@ export async function getNPHPUsertorrentlistajax(
   },
 ) {
   return request<string>(
-    'getusertorrentlistajax.php',
+    API_PATHS.USER_TORRENT_LIST_AJAX,
     {
       method: 'GET',
       params,
@@ -75,7 +80,7 @@ export async function getNPHPUsertorrentHistory(
     uid: string
   },
 ) {
-  return request<string>('claim.php', {
+  return request<string>(API_PATHS.CLAIM_HISTORY, {
     method: 'GET',
     params,
   })
@@ -97,7 +102,7 @@ export async function getNPHPPterUsertorrentlistajax(
   },
 ) {
   return request<string>(
-    'getusertorrentlist.php',
+    API_PATHS.USER_TORRENT_LIST,
     {
       method: 'GET',
       params,
@@ -131,9 +136,9 @@ export function getSSDLedTorrent(
   id: string,
 ) {
   const body = new FormData()
-  body.append('action', 'add')
-  body.append('id', `${id}`)
-  return request<LedTorrentDetails>(`/adopt.php`, {
+  body.append(API_PARAMS.ACTION, API_PARAM_VALUES.SSD_CLAIM)
+  body.append(API_PARAMS.ID, `${id}`)
+  return request<LedTorrentDetails>(API_PATHS.SSD_ADOPT, {
     method: 'POST',
     body,
   })

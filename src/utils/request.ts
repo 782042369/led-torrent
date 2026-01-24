@@ -6,6 +6,7 @@
  * @Description: HTTP请求封装 - 重构版
  */
 
+import { API_PATHS, ERROR_STATUS_CODES, MESSAGES, REQUEST_TIMEOUT } from './constants'
 import { ApiError, NetworkError } from './errors'
 
 interface RequestConfig {
@@ -29,7 +30,7 @@ class HttpClient {
   private requestInterceptors: RequestInterceptor[] = []
   private responseInterceptors: ResponseInterceptor[] = []
 
-  constructor(timeout = 30000) {
+  constructor(timeout = REQUEST_TIMEOUT) {
     this.timeout = timeout
   }
 
@@ -83,7 +84,7 @@ class HttpClient {
       if (error instanceof Error && error.name === 'AbortError') {
         throw new NetworkError(
           'Request timeout',
-          '请求超时，请检查网络连接后重试',
+          MESSAGES.ERROR.TIMEOUT,
           error,
         )
       }
@@ -137,7 +138,7 @@ class HttpClient {
       )
 
       // 处理特殊响应
-      if (url.includes('viewclaims.php')) {
+      if (url.includes(API_PATHS.VIEW_CLAIMS)) {
         try {
           await interceptedResponse.json()
           return true as T
@@ -150,14 +151,12 @@ class HttpClient {
       // 错误状态码处理
       if (url.includes('user-seeding-torrent')) {
         if (
-          interceptedResponse.status === 500
-          || interceptedResponse.status === 404
-          || interceptedResponse.status === 403
-          || interceptedResponse.url.includes('/login')
+          ERROR_STATUS_CODES.includes(interceptedResponse.status as any)
+          || interceptedResponse.url.includes(API_PATHS.LOGIN)
         ) {
           throw new ApiError(
             `API Error: ${interceptedResponse.status}`,
-            '登录失效或无权限访问，请重新登录',
+            MESSAGES.ERROR.UNAUTHORIZED,
             interceptedResponse.status,
           )
         }
@@ -165,9 +164,9 @@ class HttpClient {
 
       // 返回文本或JSON
       if (
-        url.includes('getusertorrentlistajax')
-        || url.includes('claim.php')
-        || url.includes('getusertorrentlist.php')
+        url.includes(API_PATHS.USER_TORRENT_LIST_AJAX)
+        || url.includes(API_PATHS.CLAIM_HISTORY)
+        || url.includes(API_PATHS.USER_TORRENT_LIST)
       ) {
         return (await interceptedResponse.text()) as T
       }
@@ -188,7 +187,7 @@ class HttpClient {
       // 其他错误包装为NetworkError
       throw new NetworkError(
         `Fetch error: ${error}`,
-        '网络请求失败，请检查网络连接',
+        MESSAGES.ERROR.NETWORK_ERROR,
         error,
       )
     }

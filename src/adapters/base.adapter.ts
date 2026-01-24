@@ -8,9 +8,10 @@ import type {
 import type { ActionType, SiteType } from '@/utils/constants'
 
 import { processWithConcurrencyAndDelay } from '@/utils/concurrency'
-
-const CONCURRENCY_LIMIT = 5
-const DELAY_AFTER_REQUEST_MS = 1000
+import {
+  DEFAULT_CONCURRENCY_LIMIT,
+  DEFAULT_DELAY_AFTER_REQUEST_MS,
+} from '@/utils/constants'
 
 export abstract class BaseAdapter implements SiteAdapter {
   abstract readonly name: string
@@ -49,8 +50,8 @@ export abstract class BaseAdapter implements SiteAdapter {
     torrentIds: string[],
     action: ActionType,
     context?: ActionContext,
-    concurrency: number = CONCURRENCY_LIMIT,
-    delayMs: number = DELAY_AFTER_REQUEST_MS,
+    concurrency: number = DEFAULT_CONCURRENCY_LIMIT,
+    delayMs: number = DEFAULT_DELAY_AFTER_REQUEST_MS,
   ): Promise<ActionResult[]> {
     return processWithConcurrencyAndDelay(
       torrentIds,

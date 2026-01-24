@@ -2,7 +2,15 @@ import type { ActionContext, ActionResult, LoadContext, TorrentData } from '@/ty
 
 import { getNPHPUsertorrentlistajax, getSSDLedTorrent } from '@/utils/api'
 import { hasNextPage, parseHTML } from '@/utils/common/dom'
-import { ActionType, SiteType } from '@/utils/constants'
+import {
+  ActionType,
+  API_PATHS,
+  MESSAGES,
+  SELECTORS,
+  SITE_DOMAINS,
+  SiteType,
+  TEXT_CONTENT,
+} from '@/utils/constants'
 
 import { BaseAdapter } from './base.adapter'
 
@@ -14,7 +22,7 @@ export class SpringSundayAdapter extends BaseAdapter {
   readonly type = SiteType.SPRING_SUNDAY
 
   supports(url: string): boolean {
-    return url.includes('springsunday.net/userdetails.php')
+    return url.includes(`${SITE_DOMAINS.SPRING_SUNDAY}/${API_PATHS.USER_DETAILS}`)
   }
 
   async loadUserTorrents(
@@ -37,7 +45,7 @@ export class SpringSundayAdapter extends BaseAdapter {
       const doc = parseHTML(html)
 
       // 查找可认领的种子
-      const claimDoms = doc.querySelectorAll('.btn')
+      const claimDoms = doc.querySelectorAll(SELECTORS.SSD_BUTTON)
       claimDoms.forEach((dom) => {
         const id = dom.getAttribute('id')?.replace('btn', '') || ''
         if (id && !claimable.includes(id)) {
@@ -46,9 +54,9 @@ export class SpringSundayAdapter extends BaseAdapter {
       })
 
       // 查找已认领的种子
-      const removeDoms = doc.querySelectorAll('.nowrap')
+      const removeDoms = doc.querySelectorAll(SELECTORS.SSD_NOWRAP)
       removeDoms.forEach((dom) => {
-        if (dom.innerHTML === '已认领') {
+        if (dom.textContent?.trim() === TEXT_CONTENT.CLAIMED_CN) {
           const id = dom.getAttribute('id')?.replace('btn', '') || ''
           if (id && !claimed.includes(id)) {
             claimed.push(id)
@@ -78,7 +86,7 @@ export class SpringSundayAdapter extends BaseAdapter {
     if (action !== ActionType.CLAIM) {
       return {
         success: false,
-        message: '春天站不支持弃种操作',
+        message: MESSAGES.ABANDON_NOT_SUPPORTED.springsunday,
       }
     }
 
@@ -87,13 +95,13 @@ export class SpringSundayAdapter extends BaseAdapter {
 
       return {
         success: true,
-        message: data.msg || '领取成功',
+        message: data.msg || MESSAGES.SUCCESS.claim,
       }
     }
     catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : '领取失败',
+        message: error instanceof Error ? error.message : MESSAGES.FAILURE.claim,
       }
     }
   }

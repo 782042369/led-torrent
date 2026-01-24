@@ -6,7 +6,18 @@ import {
   getNPHPUsertorrentlistajax,
 } from '@/utils/api'
 import { hasNextPage, parseHTML } from '@/utils/common/dom'
-import { ActionType, SiteType } from '@/utils/constants'
+import {
+  ActionType,
+  API_PARAM_VALUES,
+  API_PARAMS,
+  API_PATHS,
+  CSS_VALUES,
+  MESSAGES,
+  SELECTORS,
+  SITE_DOMAINS,
+  SiteType,
+  TEXT_CONTENT,
+} from '@/utils/constants'
 
 import { BaseAdapter } from './base.adapter'
 
@@ -18,7 +29,7 @@ export class GenericAdapter extends BaseAdapter {
   readonly type = SiteType.GENERIC
 
   supports(url: string): boolean {
-    return url.includes('userdetails.php') && !url.includes('pterclub.com')
+    return url.includes(API_PATHS.USER_DETAILS) && !url.includes(SITE_DOMAINS.PTER)
   }
 
   async loadUserTorrents(
@@ -44,9 +55,9 @@ export class GenericAdapter extends BaseAdapter {
       const doc = parseHTML(html)
 
       // 查找所有td元素
-      const tdList = doc.querySelectorAll('td')
+      const tdList = doc.querySelectorAll(SELECTORS.TORRENT_LIST_CELL)
       tdList.forEach((td) => {
-        const buttons = td.querySelectorAll('button')
+        const buttons = td.querySelectorAll(SELECTORS.BUTTON)
         if (buttons.length < 2)
           return
 
@@ -64,8 +75,8 @@ export class GenericAdapter extends BaseAdapter {
 
         // 需要认领的种子
         const isClaimable
-          = (text0.includes('领') || text0.includes('領'))
-            && display1 === 'none'
+          = (text0.includes(TEXT_CONTENT.CLAIM_BUTTON_CN) || text0.includes(TEXT_CONTENT.CLAIM_BUTTON_TW))
+            && display1 === CSS_VALUES.DISPLAY_NONE
             && !claimable.includes(torrentId)
 
         if (isClaimable) {
@@ -74,8 +85,8 @@ export class GenericAdapter extends BaseAdapter {
 
         // 已认领的种子
         const isClaimed
-          = display0 === 'none'
-            && (text1.includes('弃') || text1.includes('棄'))
+          = display0 === CSS_VALUES.DISPLAY_NONE
+            && (text1.includes(TEXT_CONTENT.ABANDON_BUTTON_CN) || text1.includes(TEXT_CONTENT.ABANDON_BUTTON_TW))
             && !claimed.includes(torrentId)
 
         if (isClaimed) {
@@ -88,7 +99,7 @@ export class GenericAdapter extends BaseAdapter {
       // 检查是否有下一页
       const hasMore = hasNextPage(
         doc,
-        `a[href*="getusertorrentlistajax.php?page=${page}"]`,
+        `a[href*="${API_PATHS.USER_TORRENT_LIST_AJAX}?${API_PARAMS.PAGE}=${page}"]`,
       )
 
       if (!hasMore)
@@ -112,9 +123,9 @@ export class GenericAdapter extends BaseAdapter {
       const html = await getNPHPUsertorrentHistory({ page, uid })
       const doc = parseHTML(html)
 
-      const tdList = doc.querySelectorAll('#claim-table td')
+      const tdList = doc.querySelectorAll(SELECTORS.CLAIM_TABLE_CELL)
       tdList.forEach((td) => {
-        const buttons = td.querySelectorAll('button')
+        const buttons = td.querySelectorAll(SELECTORS.BUTTON)
         if (buttons.length < 2)
           return
 
@@ -127,8 +138,8 @@ export class GenericAdapter extends BaseAdapter {
         const text1 = button1.textContent || ''
 
         const shouldAdd
-          = display0 === 'none'
-            && (text1.includes('弃') || text1.includes('棄'))
+          = display0 === CSS_VALUES.DISPLAY_NONE
+            && (text1.includes(TEXT_CONTENT.ABANDON_BUTTON_CN) || text1.includes(TEXT_CONTENT.ABANDON_BUTTON_TW))
             && torrentId
             && !claimed.includes(torrentId)
             && claimId
@@ -141,7 +152,7 @@ export class GenericAdapter extends BaseAdapter {
 
       page++
 
-      const hasMore = hasNextPage(doc, `a[href*="?uid=${uid}&page=${page}"]`)
+      const hasMore = hasNextPage(doc, `a[href*="?${API_PARAMS.UID}=${uid}&${API_PARAMS.PAGE}=${page}"]`)
       if (!hasMore)
         break
     } while (true)
@@ -157,18 +168,18 @@ export class GenericAdapter extends BaseAdapter {
     try {
       const data = await getNPHPLedTorrent(
         torrentId,
-        action === ActionType.CLAIM ? 'addClaim' : 'removeClaim',
+        action === ActionType.CLAIM ? API_PARAM_VALUES.CLAIM : API_PARAM_VALUES.REMOVE_CLAIM,
       )
 
       return {
         success: true,
-        message: data.msg || '操作成功',
+        message: data.msg || MESSAGES.SUCCESS.operation,
       }
     }
     catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : '操作失败',
+        message: error instanceof Error ? error.message : MESSAGES.FAILURE.operation,
       }
     }
   }

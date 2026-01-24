@@ -5,7 +5,15 @@ import {
   getNPHPPterUsertorrentlistajax,
 } from '@/utils/api'
 import { hasNextPage, parseHTML } from '@/utils/common/dom'
-import { ActionType, SiteType } from '@/utils/constants'
+import {
+  ActionType,
+  API_PARAMS,
+  API_PATHS,
+  MESSAGES,
+  SELECTORS,
+  SITE_DOMAINS,
+  SiteType,
+} from '@/utils/constants'
 
 import { BaseAdapter } from './base.adapter'
 
@@ -17,7 +25,7 @@ export class PterAdapter extends BaseAdapter {
   readonly type = SiteType.PTER
 
   supports(url: string): boolean {
-    return url.includes('pterclub.com/getusertorrentlist.php')
+    return url.includes(`${SITE_DOMAINS.PTER}/${API_PATHS.USER_TORRENT_LIST}`)
   }
 
   async loadUserTorrents(
@@ -40,7 +48,7 @@ export class PterAdapter extends BaseAdapter {
       const doc = parseHTML(html)
 
       // 查找可认领的种子
-      const claimDoms = doc.querySelectorAll('.claim-confirm')
+      const claimDoms = doc.querySelectorAll(SELECTORS.PTER_CLAIM_CONFIRM)
       claimDoms.forEach((dom) => {
         const id = dom.getAttribute('data-url') || ''
         if (id && !claimable.includes(id)) {
@@ -49,7 +57,7 @@ export class PterAdapter extends BaseAdapter {
       })
 
       // 查找已认领的种子
-      const removeDoms = doc.querySelectorAll('.remove-confirm')
+      const removeDoms = doc.querySelectorAll(SELECTORS.PTER_REMOVE_CONFIRM)
       removeDoms.forEach((dom) => {
         const id = dom.getAttribute('data-url') || ''
         if (id && !claimed.includes(id)) {
@@ -61,7 +69,7 @@ export class PterAdapter extends BaseAdapter {
 
       const hasMore = hasNextPage(
         doc,
-        `a[href*="?userid=${userId}&type=seeding&page=${page}"]`,
+        `a[href*="?${API_PARAMS.USER_ID}=${userId}&${API_PARAMS.TYPE}=seeding&${API_PARAMS.PAGE}=${page}"]`,
       )
 
       if (!hasMore)
@@ -79,7 +87,7 @@ export class PterAdapter extends BaseAdapter {
     if (action !== ActionType.CLAIM) {
       return {
         success: false,
-        message: '猫站不支持弃种操作',
+        message: MESSAGES.ABANDON_NOT_SUPPORTED.pter,
       }
     }
 
@@ -88,13 +96,13 @@ export class PterAdapter extends BaseAdapter {
 
       return {
         success,
-        message: success ? '领取成功' : '领取失败',
+        message: success ? MESSAGES.SUCCESS.claim : MESSAGES.FAILURE.claim,
       }
     }
     catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : '领取失败',
+        message: error instanceof Error ? error.message : MESSAGES.FAILURE.claim,
       }
     }
   }
