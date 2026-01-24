@@ -37,6 +37,17 @@ export interface SiteAdapter {
     action: ActionType,
     context?: ActionContext,
   ) => Promise<ActionResult>
+
+  /**
+   * 批量执行操作 - 使用并发控制和请求延迟
+   */
+  batchPerformAction: (
+    torrentIds: string[],
+    action: ActionType,
+    context?: ActionContext,
+    concurrency?: number,
+    delayMs?: number,
+  ) => Promise<ActionResult[]>
 }
 
 /**

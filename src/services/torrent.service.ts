@@ -29,26 +29,27 @@ export class TorrentService {
     }
   }
 
+  /**
+   * 批量执行操作 - 使用并发控制和请求延迟
+   * @param torrentIds - 种子ID数组
+   * @param action - 操作类型
+   * @param onProgress - 进度回调
+   * @returns 统计结果
+   */
   async batchPerformAction(
     torrentIds: string[],
     action: ActionType,
-    onProgress?: (current: number, total: number, message: string) => void,
+    onProgress?: (current: number, total: number) => void,
   ): Promise<Record<string, number>> {
+    const results = await this.adapter.batchPerformAction(
+      torrentIds,
+      action,
+      { onProgress },
+    )
+
     const stats: Record<string, number> = {}
-
-    for (let i = 0; i < torrentIds.length; i++) {
-      try {
-        const result = await this.adapter.performAction(torrentIds[i], action, {
-          onProgress: (current, total) => onProgress?.(current, total, result.message),
-        })
-        stats[result.message] = (stats[result.message] || 0) + 1
-      }
-      catch (error) {
-        const message = getUserMessage(error)
-        stats[message] = (stats[message] || 0) + 1
-      }
-
-      onProgress?.(i + 1, torrentIds.length, '处理中...')
+    for (const result of results) {
+      stats[result.message] = (stats[result.message] ?? 0) + 1
     }
 
     return stats

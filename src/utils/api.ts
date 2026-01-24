@@ -6,7 +6,7 @@
  * @Description: API 接口定义 - 包含各个PT站点的API接口
  */
 
-import type { PTAPI } from '@/types/api'
+import type { LedTorrentDetails } from '@/types'
 
 import request from './request'
 
@@ -30,7 +30,7 @@ export function getNPHPLedTorrent(
     body.append('action', 'removeClaim')
     body.append('params[id]', `${id}`)
   }
-  return request<PTAPI.LedTorrentDetails>(`/ajax.php`, {
+  return request<LedTorrentDetails>(`/ajax.php`, {
     method: 'POST',
     body,
   })
@@ -133,7 +133,7 @@ export function getSSDLedTorrent(
   const body = new FormData()
   body.append('action', 'add')
   body.append('id', `${id}`)
-  return request<PTAPI.LedTorrentDetails>(`/adopt.php`, {
+  return request<LedTorrentDetails>(`/adopt.php`, {
     method: 'POST',
     body,
   })
