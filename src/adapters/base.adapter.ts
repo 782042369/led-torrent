@@ -54,7 +54,7 @@ export abstract class BaseAdapter implements SiteAdapter {
   ): Promise<ActionResult[]> {
     return processWithConcurrencyAndDelay(
       torrentIds,
-      (torrentId) => this.performAction(torrentId, action, context),
+      torrentId => this.performAction(torrentId, action, context),
       concurrency,
       delayMs,
       context?.onProgress,
