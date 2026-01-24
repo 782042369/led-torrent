@@ -6,6 +6,8 @@
  * @Description: API 接口定义 - 包含各个PT站点的API接口
  */
 
+import type { PTAPI } from '@/types/api'
+
 import request from './request'
 
 /**
@@ -135,23 +137,4 @@ export function getSSDLedTorrent(
     method: 'POST',
     body,
   })
-}
-/**
- * 学校站点认领种子
- *
- * @param id - 种子ID
- * @returns 返回认领操作的结果详情
- */
-export function getSchLedTorrent(
-  id: string,
-) {
-  const body = new FormData()
-  body.append('action', 'add')
-  body.append('id', `${id}`)
-  return request<PTAPI.LedTorrentDetails>(
-    `/viewclaims.php?add_torrent_id=${id}`,
-    {
-      method: 'GET',
-    },
-  )
 }
