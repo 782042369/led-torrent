@@ -30,21 +30,6 @@ export function buildMessageList(messages: Record<string, number>): string {
 }
 
 /**
- * 更新按钮文本和状态
- * @param button 按钮元素
- * @param text 按钮文本
- * @param disabled 是否禁用
- */
-export function updateButton(
-  button: HTMLButtonElement,
-  text: string,
-  disabled = false,
-): void {
-  button.textContent = text
-  button.disabled = disabled
-}
-
-/**
  * 创建进度文本
  * @param total 总数
  * @param current 当前数

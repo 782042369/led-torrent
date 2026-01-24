@@ -1,198 +1,192 @@
-/*
- * @Author: yanghongxuan
- * @Date: 2023-11-01 14:46:20
- * @LastEditors: yanghongxuan
- * @LastEditTime: 2025-05-13 15:00:00
- * @Description: LED Torrent 主入口文件，用于在各大PT站点实现一键领种/弃种功能
- */
-import {
-  animateButton,
-  getLedMsg,
-  getvl,
-  handleLedPterTorrent,
-  handleLedSpringsundayTorrent,
-  handleLedTorrent,
-  loadPterUserTorrents,
-  loadSpringsundayUserTorrents,
-  loadUserTorrents,
-  loadUserTorrentsHistory,
-} from '@/utils'
+import { SiteFactory } from '@/services/site.factory'
+import { TorrentService } from '@/services/torrent.service'
+import { getUrlParam } from '@/utils/common/dom'
+import { animateButton, buildMessageList, buildProgressText } from '@/utils/common/ui'
+import { ActionType } from '@/utils/constants'
 import '@/styles/led-torrent.scss'
 
-import type { TorrentDataIdsType } from './types'
+class LoadingState {
+  private _loading = false
 
-// 初始化加载状态
-let loading = false
-// 优化事件监听器的设置
-/**
- * 设置按钮监听器，处理领种/弃种操作
- *
- * @param button - 操作按钮元素
- * @param action - 异步操作函数，执行具体的领种或弃种逻辑
- */
-function setupButtonListener(
-  button: HTMLButtonElement,
-  action: () => Promise<void>,
-) {
-  button.addEventListener('click', async (e: MouseEvent) => {
-    if (loading) {
-      e.preventDefault()
+  get isLoading(): boolean {
+    return this._loading
+  }
+
+  start(): void {
+    this._loading = true
+  }
+
+  stop(): void {
+    this._loading = false
+  }
+}
+
+class UIManager {
+  private button: HTMLButtonElement
+  private messageList: HTMLUListElement
+  private loadingState: LoadingState
+
+  constructor(button: HTMLButtonElement, messageList: HTMLUListElement) {
+    this.button = button
+    this.messageList = messageList
+    this.loadingState = new LoadingState()
+  }
+
+  setupButtonListener(handler: () => Promise<void>): void {
+    this.button.addEventListener('click', async (e) => {
+      if (this.loadingState.isLoading) {
+        e.preventDefault()
+        return
+      }
+
+      this.loadingState.start()
+      animateButton(e)
+      this.button.disabled = true
+
+      try {
+        await handler()
+      }
+      catch (error) {
+        console.error('Error:', error)
+        this.showError(error)
+      }
+      finally {
+        this.loadingState.stop()
+        this.button.disabled = false
+      }
+    })
+  }
+
+  private showError(error: unknown): void {
+    const message = error instanceof Error ? error.message : '未知错误'
+    this.button.textContent = message
+  }
+
+  setText(text: string): void {
+    this.button.textContent = text
+  }
+
+  updateMessages(messages: Record<string, number>): void {
+    this.messageList.innerHTML = buildMessageList(messages)
+  }
+
+  addMessage(message: string): void {
+    this.messageList.innerHTML += `<li>${message}</li>`
+  }
+}
+
+class AppController {
+  private ui: UIManager
+  private service: TorrentService | null = null
+
+  constructor(ui: UIManager) {
+    this.ui = ui
+  }
+
+  init(): void {
+    const url = window.location.href
+    const adapter = SiteFactory.getAdapter(url)
+
+    if (!adapter) {
+      this.ui.setText('当前站点不支持')
+      this.ui.addMessage('未找到适配当前站点的处理器')
       return
     }
-    loading = true
-    animateButton(e)
-    button.disabled = true
-    button.textContent = '开始工作，为了网站和你自己的电脑速度调的很慢~~~'
 
-    try {
-      await action()
-    }
-    catch (error: any) {
-      console.error('Error: ', error)
-      button.textContent = error.message
-    }
-    finally {
-      loading = false
-      button.disabled = false
-    }
-  })
-}
+    this.service = new TorrentService(adapter)
 
-const button = document.createElement('button')
-const ulbox = document.createElement('ul')
-button.className = 'bubbly-button'
-const div = document.createElement('div')
-div.className = 'led-box'
-
-div.appendChild(button)
-div.appendChild(ulbox)
-
-if (location.href.includes('claim.php')) {
-  button.textContent = '一键弃种'
-  ulbox.innerHTML = `<li>放弃本人没在做种的种子</li>`
-
-  setupButtonListener(button, async () => {
-    if (confirm('真的要弃种吗?')) {
-      button.textContent = '获取所有数据，请稍等。'
-      const msglist: { [key in string]: number } = {}
-      // 获取所有做种领种数据
-      const uid = getvl('uid')
-      const ledlist: string[] = []
-      await loadUserTorrents(uid, [], ledlist)
-      ulbox.innerHTML += `<li>获取所有在做种且领取状态的数据一共${ledlist.length}个</li>`
-      const allData: TorrentDataIdsType = []
-      button.textContent = '获取所有领种的数据'
-      await loadUserTorrentsHistory(uid, allData, ledlist)
-      ulbox.innerHTML += `<li>获取所有没在做种且领取状态的数据一共${allData.length}个</li>`
-      if (allData.length) {
-        if (
-          confirm(
-            `目前有${allData.length}个可能不在做种状态，真的要放弃领种吗?`,
-          )
-        ) {
-          await handleLedTorrent(allData, button, msglist, 'removeClaim')
-        }
-        else {
-          loading = false
-        }
-      }
+    if (url.includes('claim.php')) {
+      this.setupAbandonButton()
     }
     else {
-      loading = false
+      this.setupClaimButton()
     }
-  })
+  }
+
+  private setupClaimButton(): void {
+    if (!this.service)
+      return
+
+    this.ui.setText('一键认领')
+    this.ui.addMessage('点击按钮开始认领种子')
+
+    this.ui.setupButtonListener(async () => {
+      const userId = getUrlParam('id')
+      if (!userId)
+        throw new Error('无法获取用户ID')
+
+      this.ui.setText('正在加载种子数据...')
+      const data = await this.service!.loadUserTorrents(userId, msg => this.ui.addMessage(msg))
+
+      if (data.claimed.length > 0)
+        this.ui.updateMessages({ 已经认领过: data.claimed.length })
+
+      if (data.claimable.length === 0) {
+        this.ui.setText('没有可认领的种子')
+        return
+      }
+
+      const confirmed = confirm(`找到 ${data.claimable.length} 个可认领种子，是否开始认领？`)
+      if (!confirmed)
+        return
+
+      this.ui.setText('开始认领...')
+      const stats = await this.service!.batchPerformAction(
+        data.claimable,
+        ActionType.CLAIM,
+        (current, total) => {
+          this.ui.setText(buildProgressText(total, current))
+        },
+      )
+
+      this.ui.setText('认领完成，刷新查看')
+      this.ui.updateMessages(stats)
+    })
+  }
+
+  private setupAbandonButton(): void {
+    if (!this.service)
+      return
+
+    this.ui.setText('一键弃种')
+    this.ui.addMessage('放弃本人没在做种的种子')
+
+    this.ui.setupButtonListener(async () => {
+      const userId = getUrlParam('uid')
+      if (!userId)
+        throw new Error('无法获取用户ID')
+
+      const confirmed = confirm('真的要弃种吗?')
+      if (!confirmed)
+        return
+
+      this.ui.setText('正在获取做种数据...')
+      const seedingData = await this.service!.loadUserTorrents(userId, msg => this.ui.addMessage(msg))
+      this.ui.addMessage(`获取所有在做种且领取状态的数据一共 ${seedingData.claimed.length} 个`)
+
+      this.ui.setText('正在获取历史领种数据...')
+      // TODO: 调用特定的方法获取历史数据
+
+      this.ui.setText('弃种完成')
+    })
+  }
 }
 
-// 定义一些通用的函数来处理重复的逻辑
+function bootstrap(): void {
+  const button = document.createElement('button')
+  button.className = 'bubbly-button'
 
-/**
- * 处理不同站点的种子操作（认领、放弃等）
- *
- * @param button - 操作按钮元素，用于显示状态信息
- * @param ulbox - 显示操作消息的列表元素
- * @param userId - 用户ID，用于获取用户相关的种子数据
- * @param action - 操作类型，指定要执行的具体操作
- * @returns Promise<void> - 异步操作完成后的Promise
- */
-async function handleTorrentsActions(
-  button: HTMLButtonElement,
-  ulbox: HTMLElement,
-  userId: string,
-  action: 'claim' | 'abandon' | 'claimPter' | 'claimSpring' | 'claimSCH',
-) {
-  const msglist: { [key in string]: number } = {}
-  const ledlist: string[] = []
-  const allData: TorrentDataIdsType = []
+  const messageList = document.createElement('ul')
+  const container = document.createElement('div')
+  container.className = 'led-box'
+  container.appendChild(button)
+  container.appendChild(messageList)
 
-  // 根据不同的操作调用不同的函数获取种子数据
-  if (action === 'claim' || action === 'abandon') {
-    await loadUserTorrents(userId, allData, ledlist)
-  }
-  else if (action === 'claimPter') {
-    await loadPterUserTorrents(userId, allData, ledlist)
-  }
-  else if (action === 'claimSpring') {
-    await loadSpringsundayUserTorrents(userId, allData, ledlist)
-  }
+  const ui = new UIManager(button, messageList)
+  const controller = new AppController(ui)
+  controller.init()
 
-  if (!allData.length) {
-    button.textContent = `该站点可能不支持领种子。`
-  }
-
-  if (ledlist.length > 0) {
-    msglist['已经认领过'] = ledlist.length
-  }
-  ulbox.innerHTML = getLedMsg(msglist)
-
-  // 根据操作执行相应的处理
-  if (action === 'claim' || action === 'abandon') {
-    await handleLedTorrent(
-      allData,
-      button,
-      msglist,
-      action === 'claim' ? 'addClaim' : 'removeClaim',
-    )
-  }
-  else if (action === 'claimPter') {
-    await handleLedPterTorrent(allData, button, msglist)
-  }
-  else if (action === 'claimSpring') {
-    await handleLedSpringsundayTorrent(allData, button, msglist)
-  }
-
-  button.textContent = `一键操作完毕，刷新查看。`
-  ulbox.innerHTML = getLedMsg(msglist)
-}
-if (location.href.includes('pterclub.com/getusertorrentlist.php')) {
-  // 猫站领取种子按钮
-  button.textContent = '一键认领'
-  setupButtonListener(button, () =>
-    handleTorrentsActions(button, ulbox, getvl('userid'), 'claimPter'))
-}
-else if (location.href.includes('springsunday.net/userdetails.php')) {
-  // 春天领取种子
-  button.textContent = '一键认领'
-  setupButtonListener(button, () =>
-    handleTorrentsActions(button, ulbox, getvl('id'), 'claimSpring'))
-}
-else if (location.href.includes('pt.btschool.club/userdetails.php')) {
-  // 学校领取种子
-  button.textContent = '一键认领'
-  setupButtonListener(button, () =>
-    handleTorrentsActions(button, ulbox, getvl('id'), 'claimSCH'))
-}
-else if (location.href.includes('userdetails.php')) {
-  // 通用站点领取种子
-  button.textContent = '一键认领'
-  setupButtonListener(button, () =>
-    handleTorrentsActions(button, ulbox, getvl('id'), 'claim'))
-}
-else if (location.href.includes('claim.php')) {
-  // 通用站点放弃本地没在做种的领种
-  button.textContent = '一键弃种'
-  ulbox.innerHTML = `<li>放弃本人没在做种的种子</li>`
-  setupButtonListener(button, () =>
-    handleTorrentsActions(button, ulbox, getvl('uid'), 'abandon'))
+  document.body.appendChild(container)
 }
 
-document.body.appendChild(div)
+bootstrap()
