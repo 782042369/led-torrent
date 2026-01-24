@@ -160,14 +160,45 @@ class AppController {
       if (!confirmed)
         return
 
+      // 第一步：获取做种数据
       this.ui.setText('正在获取做种数据...')
       const seedingData = await this.service!.loadUserTorrents(userId, msg => this.ui.addMessage(msg))
       this.ui.addMessage(`获取所有在做种且领取状态的数据一共 ${seedingData.claimed.length} 个`)
 
+      // 第二步：获取历史领种数据（不在做种的种子）
       this.ui.setText('正在获取历史领种数据...')
-      // TODO: 调用特定的方法获取历史数据
+      const notSeeding = await this.service!.loadUserTorrentsHistory(
+        userId,
+        seedingData.claimed,
+        msg => this.ui.addMessage(msg),
+      )
+
+      if (notSeeding.length === 0) {
+        this.ui.setText('没有需要弃种的种子')
+        return
+      }
+
+      this.ui.addMessage(`获取所有没在做种且领取状态的数据一共 ${notSeeding.length} 个`)
+
+      // 第三步：确认弃种
+      const confirmed2 = confirm(
+        `目前有 ${notSeeding.length} 个可能不在做种状态，真的要放弃领种吗?`,
+      )
+      if (!confirmed2)
+        return
+
+      // 第四步：执行弃种操作
+      this.ui.setText('开始弃种...')
+      const stats = await this.service!.batchPerformAction(
+        notSeeding,
+        ActionType.ABANDON,
+        (current, total) => {
+          this.ui.setText(buildProgressText(total, current))
+        },
+      )
 
       this.ui.setText('弃种完成')
+      this.ui.updateMessages(stats)
     })
   }
 }

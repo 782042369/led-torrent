@@ -30,6 +30,16 @@ export interface SiteAdapter {
   ) => Promise<TorrentData>
 
   /**
+   * 加载用户历史领种数据（可选方法）
+   * 用于获取不在做种但已领种的种子列表
+   */
+  loadUserTorrentsHistory?: (
+    userId: string,
+    claimed: string[],
+    context?: LoadContext,
+  ) => Promise<string[]>
+
+  /**
    * 执行操作（领种/弃种）
    */
   performAction: (
