@@ -6,16 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint --fix . --concurrency=auto"
+    "lint": "eslint --fix"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^6.7.3",
+    "@antfu/eslint-config": "^7.2.0",
     "@types/node": "24.10.4",
     "eslint": "^9.39.2",
     "eslint-plugin-format": "^1.1.0",
     "sass": "^1.97.1",
     "typescript": "^5.9.3",
-    "vite": "^7.3.0",
-    "vite-plugin-monkey": "^7.1.8"
+    "vite": "^7.3.1",
+    "vite-plugin-monkey": "v7.1.9"
   }
 }
