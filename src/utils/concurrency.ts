@@ -17,7 +17,7 @@
  * await processWithConcurrencyAndDelay(
  *   items,
  *   async (item) => fetchData(item),
- *   5,     // 5个并发
+ *   2,     // 2个并发
  *   1000   // 延迟1秒
  * )
  */

@@ -30,7 +30,7 @@ export const PAGE_SIZE = 50
 /**
  * 默认并发数量
  */
-export const DEFAULT_CONCURRENCY_LIMIT = 5
+export const DEFAULT_CONCURRENCY_LIMIT = 2
 
 /**
  * 请求延迟时间（毫秒） - 防止被PT站点封IP
