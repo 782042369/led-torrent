@@ -1,12 +1,54 @@
+/* eslint-disable regexp/no-useless-quantifier */
+/* eslint-disable regexp/no-super-linear-backtracking */
 export default {
   // 这里改成你自己的仓库地址
   repositoryUrl: 'https://github.com/782042369/led-torrent.git',
   branches: ['main'], // 指定在哪个分支下要执行发布操作
   plugins: [
-    // 1. 解析 commit 信息，默认就是 Angular 规范
-    '@semantic-release/commit-analyzer',
+    // 1. 解析 commit 信息，配置支持 emoji 前缀
+    [
+      '@semantic-release/commit-analyzer',
+      {
+        // 配置解析规则，支持带 emoji 的 commit message
+        parserOpts: {
+          // 匹配带 emoji 的 commit 类型，例如：✨ feat(scope): description
+          headerPattern: /^(?:(\w*)|(\p{Emoji}*))\s*(?:\((.*?)\))?\s*(?:[\u200B-\u200D\uFEFF]*?)?\s*:*\s+(.*)$/u,
+          headerCorrespondence: ['type', 'scope', 'subject'],
+          noteKeywords: ['BREAKING CHANGE', 'BREAKING CHANGES', '不兼容变更'],
+          revertPattern: /^(?:Revert|revert:)\s"?([\s\S]+?)"?\s*This reverts commit (\w*)\./i,
+          revertCorrespondence: ['header', 'hash'],
+        },
+        // 定义哪些类型触发 release
+        releaseRules: [
+          { type: 'feat', release: 'minor' },
+          { type: 'fix', release: 'patch' },
+          { type: 'perf', release: 'patch' },
+          { type: 'refactor', release: 'patch' },
+          { type: 'chore', release: 'patch' },
+        ],
+      },
+    ],
     // 2. 生成发布信息
-    '@semantic-release/release-notes-generator',
+    [
+      '@semantic-release/release-notes-generator',
+      {
+        // 同样配置解析规则
+        parserOpts: {
+          headerPattern: /^(?:(\w*)|(\p{Emoji}*))\s*(?:\((.*?)\))?\s*(?:[\u200B-\u200D\uFEFF]*?)?\s*:*\s+(.*)$/u,
+          headerCorrespondence: ['type', 'scope', 'subject'],
+          noteKeywords: ['BREAKING CHANGE', 'BREAKING CHANGES', '不兼容变更'],
+        },
+        // 配置提交类型映射
+        types: [
+          { type: 'feat', section: '✨ 新功能' },
+          { type: 'fix', section: '🐛 Bug 修复' },
+          { type: 'perf', section: '⚡ 性能优化' },
+          { type: 'refactor', section: '♻️ 代码重构' },
+          { type: 'chore', section: '🚧 构建/工具' },
+          { type: 'style', section: '💄 代码风格', hidden: true },
+        ],
+      },
+    ],
     // 3. 把发布日志写入该文件
     [
       '@semantic-release/changelog',
