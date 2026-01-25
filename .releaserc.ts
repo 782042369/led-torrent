@@ -1,4 +1,3 @@
-/* eslint-disable regexp/no-useless-quantifier */
 /* eslint-disable regexp/no-super-linear-backtracking */
 export default {
   // 这里改成你自己的仓库地址
@@ -57,13 +56,20 @@ export default {
         changelogFile: 'CHANGELOG.md',
       },
     ],
+    // 4. 构建项目，生成 dist 目录（这个憨批步骤必须在 git 插件之前）
+    [
+      '@semantic-release/exec',
+      {
+        prepareCmd: 'pnpm run build',
+      },
+    ],
     // 5. 将变更发布到 GitHub Release
     '@semantic-release/github',
     // 6. 前面说到日志记录和版本号是新增修改的，需要 push 回 Git
     [
       '@semantic-release/git',
       {
-        assets: ['CHANGELOG.md', 'package.json'],
+        assets: ['CHANGELOG.md', 'package.json', 'dist/**/*'],
       },
     ],
   ],
