@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/782042369/led-torrent/compare/v1.1.0...v1.1.1) (2026-01-25)
+
+
+### Bug Fixes
+
+* **release:** 移除 Unicode 属性依赖使用通用正则 ([0c3d2d7](https://github.com/782042369/led-torrent/commit/0c3d2d7c019160172ad7a158ba1c5161f66d213a))
+
 # [1.1.0](https://github.com/782042369/led-torrent/compare/v1.0.0...v1.1.0) (2026-01-25)
 
 
