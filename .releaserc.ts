@@ -11,9 +11,10 @@ export default {
       {
         // 配置解析规则，支持带 emoji 的 commit message
         parserOpts: {
-          // 匹配带 emoji 的 commit 类型，例如：✨ feat(scope): description
-          headerPattern: /^(?:(\w*)|(\p{Emoji}*))\s*(?:\((.*?)\))?\s*(?:[\u200B-\u200D\uFEFF]*?)?\s*:*\s+(.*)$/u,
-          headerCorrespondence: ['type', 'scope', 'subject'],
+          // 匹配格式：[emoji] type(scope): subject
+          // 例如：🔧 fix(release): 配置 semantic-release 或 fix(release): 配置
+          headerPattern: /^(\p{Emoji}*)\s*(\w+)(?:\(([^)]*)\))?:\s*(.*)$/u,
+          headerCorrespondence: ['emoji', 'type', 'scope', 'subject'],
           noteKeywords: ['BREAKING CHANGE', 'BREAKING CHANGES', '不兼容变更'],
           revertPattern: /^(?:Revert|revert:)\s"?([\s\S]+?)"?\s*This reverts commit (\w*)\./i,
           revertCorrespondence: ['header', 'hash'],
@@ -34,8 +35,8 @@ export default {
       {
         // 同样配置解析规则
         parserOpts: {
-          headerPattern: /^(?:(\w*)|(\p{Emoji}*))\s*(?:\((.*?)\))?\s*(?:[\u200B-\u200D\uFEFF]*?)?\s*:*\s+(.*)$/u,
-          headerCorrespondence: ['type', 'scope', 'subject'],
+          headerPattern: /^(\p{Emoji}*)\s*(\w+)(?:\(([^)]*)\))?:\s*(.*)$/u,
+          headerCorrespondence: ['emoji', 'type', 'scope', 'subject'],
           noteKeywords: ['BREAKING CHANGE', 'BREAKING CHANGES', '不兼容变更'],
         },
         // 配置提交类型映射
