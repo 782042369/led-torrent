@@ -20,7 +20,5 @@ node_modules
 *.sln
 *.sw?
 
-dist
-
 # Git worktrees
 worktrees/
