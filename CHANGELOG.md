@@ -1,3 +1,5 @@
+## [1.8.1](https://github.com/782042369/led-torrent/compare/v1.8.0...v1.8.1) (2026-01-25)
+
 ## [1.1.1](https://github.com/782042369/led-torrent/compare/v1.1.0...v1.1.1) (2026-01-25)
 
 
