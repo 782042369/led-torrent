@@ -1,3 +1,21 @@
+# [1.1.0](https://github.com/782042369/led-torrent/compare/v1.0.0...v1.1.0) (2026-01-25)
+
+
+### Bug Fixes
+
+* **release:** 修正正则表达式以正确匹配 emoji commit 格式 ([0920f93](https://github.com/782042369/led-torrent/commit/0920f9315405d4ddb3bd073fa124e9d8174208fd))
+* **release:** 配置 semantic-release 支持 emoji commit 格式 ([d60f067](https://github.com/782042369/led-torrent/commit/d60f0675c979ed2b55de89b3adab2de804609da4))
+
+
+### Features
+
+* **adapters:** 实现站点适配器层 ([81c278c](https://github.com/782042369/led-torrent/commit/81c278cf3584e103f2a504d0089539d0c9b7ae4e))
+* **concurrency:** 实现站点领取并发控制系统 ([c837b18](https://github.com/782042369/led-torrent/commit/c837b1862e158b4665870299db7e4abc73d87043))
+* **main:** 实现弃种功能完整逻辑 ([55957a8](https://github.com/782042369/led-torrent/commit/55957a822d51de24908bef4da3acf3f3ed3b68ce))
+* **pter:** 支持 userdetails.php URL 并修复403错误 ([8e10736](https://github.com/782042369/led-torrent/commit/8e10736be52f9666864e63d5fabbcef33e6592b0))
+* **services:** 实现业务服务层 ([e4f7547](https://github.com/782042369/led-torrent/commit/e4f75479c1402b6c86f753698e9a57ff1a8f4fea))
+* **types:** 重构并增强类型系统 ([efd16b4](https://github.com/782042369/led-torrent/commit/efd16b4ed59f8bb765ea66f4dd1307c96a807142))
+
 # 1.0.0 (2026-01-24)
 
 
