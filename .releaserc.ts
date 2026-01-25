@@ -56,16 +56,18 @@ export default {
         changelogFile: 'CHANGELOG.md',
       },
     ],
-    // 4. 构建项目，生成 dist 目录（这个憨批步骤必须在 git 插件之前）
+    // 4. 更新 package.json 版本号（这个憨批插件负责升级版本）
+    '@semantic-release/npm',
+    // 5. 构建项目，生成 dist 目录（这个憨批步骤必须在 git 插件之前）
     [
       '@semantic-release/exec',
       {
         prepareCmd: 'pnpm run build',
       },
     ],
-    // 5. 将变更发布到 GitHub Release
+    // 6. 将变更发布到 GitHub Release
     '@semantic-release/github',
-    // 6. 前面说到日志记录和版本号是新增修改的，需要 push 回 Git
+    // 7. 前面说到日志记录和版本号是新增修改的，需要 push 回 Git
     [
       '@semantic-release/git',
       {
