@@ -6,6 +6,13 @@
  * @Description: API 接口定义 - 包含各个PT站点的API接口
  */
 
+import type { LedTorrentDetails } from '@/types'
+
+import {
+  API_PARAM_VALUES,
+  API_PARAMS,
+  API_PATHS,
+} from './constants'
 import request from './request'
 
 /**
@@ -21,14 +28,14 @@ export function getNPHPLedTorrent(
 ) {
   const body = new FormData()
   if (type === 'addClaim') {
-    body.append('action', 'addClaim')
-    body.append('params[torrent_id]', `${id}`)
+    body.append(API_PARAMS.ACTION, API_PARAM_VALUES.CLAIM)
+    body.append(API_PARAMS.TORRENT_ID_PARAM, `${id}`)
   }
   else {
-    body.append('action', 'removeClaim')
-    body.append('params[id]', `${id}`)
+    body.append(API_PARAMS.ACTION, API_PARAM_VALUES.REMOVE_CLAIM)
+    body.append(API_PARAMS.ID_PARAM, `${id}`)
   }
-  return request<PTAPI.LedTorrentDetails>(`/ajax.php`, {
+  return request<LedTorrentDetails>(API_PATHS.AJAX, {
     method: 'POST',
     body,
   })
@@ -51,7 +58,7 @@ export async function getNPHPUsertorrentlistajax(
   },
 ) {
   return request<string>(
-    'getusertorrentlistajax.php',
+    API_PATHS.USER_TORRENT_LIST_AJAX,
     {
       method: 'GET',
       params,
@@ -73,7 +80,7 @@ export async function getNPHPUsertorrentHistory(
     uid: string
   },
 ) {
-  return request<string>('claim.php', {
+  return request<string>(API_PATHS.CLAIM_HISTORY, {
     method: 'GET',
     params,
   })
@@ -82,20 +89,20 @@ export async function getNPHPUsertorrentHistory(
  * 获取Pter站点用户种子列表
  *
  * @param params - 请求参数对象
- * @param params.page - 页码
+ * @param params.do_ajax - 默认参数，固定为1
  * @param params.userid - 用户ID
  * @param params.type - 类型，固定为'seeding'
  * @returns 返回Pter站点用户种子列表的字符串响应
  */
 export async function getNPHPPterUsertorrentlistajax(
   params: {
-    page: number
+    do_ajax: 1
     userid: string
     type: 'seeding'
   },
 ) {
   return request<string>(
-    'getusertorrentlist.php',
+    API_PATHS.USER_TORRENT_LIST,
     {
       method: 'GET',
       params,
@@ -129,29 +136,10 @@ export function getSSDLedTorrent(
   id: string,
 ) {
   const body = new FormData()
-  body.append('action', 'add')
-  body.append('id', `${id}`)
-  return request<PTAPI.LedTorrentDetails>(`/adopt.php`, {
+  body.append(API_PARAMS.ACTION, API_PARAM_VALUES.SSD_CLAIM)
+  body.append(API_PARAMS.ID, `${id}`)
+  return request<LedTorrentDetails>(API_PATHS.SSD_ADOPT, {
     method: 'POST',
     body,
   })
-}
-/**
- * 学校站点认领种子
- *
- * @param id - 种子ID
- * @returns 返回认领操作的结果详情
- */
-export function getSchLedTorrent(
-  id: string,
-) {
-  const body = new FormData()
-  body.append('action', 'add')
-  body.append('id', `${id}`)
-  return request<PTAPI.LedTorrentDetails>(
-    `/viewclaims.php?add_torrent_id=${id}`,
-    {
-      method: 'GET',
-    },
-  )
 }
