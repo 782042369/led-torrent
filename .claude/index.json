@@ -1,0 +1,314 @@
+{
+  "lastUpdated": "2026-01-25T19:18:04+08:00",
+  "projectName": "led-torrent",
+  "projectType": "userscript",
+  "language": "TypeScript",
+  "buildTool": "Vite",
+  "version": "1.8.4",
+  "modules": [
+    {
+      "name": "src",
+      "path": "src/",
+      "type": "main",
+      "language": "TypeScript",
+      "entryPoint": "main.ts",
+      "description": "源代码主目录，包含所有业务逻辑与 UI 代码",
+      "hasTests": false,
+      "hasConfig": true,
+      "keyFiles": [
+        "main.ts",
+        "services/torrent.service.ts",
+        "services/site.factory.ts",
+        "adapters/base.adapter.ts",
+        "adapters/generic.adapter.ts",
+        "adapters/pter.adapter.ts",
+        "adapters/springsunday.adapter.ts",
+        "types/site.ts",
+        "types/torrent.ts",
+        "utils/api.ts",
+        "utils/constants.ts",
+        "utils/request.ts",
+        "utils/concurrency.ts",
+        "utils/errors.ts"
+      ],
+      "interfaces": [
+        {
+          "name": "SiteAdapter",
+          "file": "types/site.ts",
+          "methods": [
+            "supports(url: string): boolean",
+            "loadUserTorrents(userId: string, context?: LoadContext): Promise<TorrentData>",
+            "loadUserTorrentsHistory?(userId: string, claimed: string[], context?: LoadContext): Promise<string[]>",
+            "performAction(torrentId: string, action: ActionType, context?: ActionContext): Promise<ActionResult>",
+            "batchPerformAction(torrentIds: string[], action: ActionType, context?: ActionContext, concurrency?: number, delayMs?: number): Promise<ActionResult[]>"
+          ]
+        }
+      ],
+      "services": [
+        {
+          "name": "TorrentService",
+          "file": "services/torrent.service.ts",
+          "methods": [
+            "loadUserTorrents(userId: string, onProgress?: (message: string) => void): Promise<TorrentData>",
+            "loadUserTorrentsHistory(userId: string, claimed: string[], onProgress?: (message: string) => void): Promise<string[]>",
+            "batchPerformAction(torrentIds: string[], action: ActionType, onProgress?: (current: number, total: number) => void): Promise<Record<string, number>>",
+            "getAdapterName(): string"
+          ]
+        },
+        {
+          "name": "SiteFactory",
+          "file": "services/site.factory.ts",
+          "methods": [
+            "getAdapter(url: string): SiteAdapter | null",
+            "registerAdapter(adapter: SiteAdapter): void"
+          ]
+        }
+      ],
+      "adapters": [
+        {
+          "name": "GenericAdapter",
+          "file": "adapters/generic.adapter.ts",
+          "siteName": "通用站点",
+          "siteType": "generic",
+          "supportsClaim": true,
+          "supportsAbandon": true,
+          "supportsHistory": true
+        },
+        {
+          "name": "PterAdapter",
+          "file": "adapters/pter.adapter.ts",
+          "siteName": "猫站",
+          "siteType": "pter",
+          "domain": "pterclub.net",
+          "supportsClaim": true,
+          "supportsAbandon": false,
+          "supportsHistory": false
+        },
+        {
+          "name": "SpringSundayAdapter",
+          "file": "adapters/springsunday.adapter.ts",
+          "siteName": "春天站",
+          "siteType": "spring_sunday",
+          "domain": "springsunday.net",
+          "supportsClaim": true,
+          "supportsAbandon": false,
+          "supportsHistory": false
+        }
+      ],
+      "utils": [
+        {
+          "name": "HTTP Client",
+          "file": "utils/request.ts",
+          "description": "HTTP 请求封装，支持拦截器和超时控制"
+        },
+        {
+          "name": "API Functions",
+          "file": "utils/api.ts",
+          "functions": [
+            "getNPHPLedTorrent",
+            "getNPHPUsertorrentlistajax",
+            "getNPHPUsertorrentHistory",
+            "getNPHPPterUsertorrentlistajax",
+            "getNPHPPterLedTorrent",
+            "getSSDLedTorrent"
+          ]
+        },
+        {
+          "name": "Concurrency Control",
+          "file": "utils/concurrency.ts",
+          "description": "并发控制和请求延迟，防止被 PT 站点封 IP"
+        },
+        {
+          "name": "Error Handling",
+          "file": "utils/errors.ts",
+          "classes": [
+            "NetworkError",
+            "ApiError",
+            "ParseError",
+            "ValidationError",
+            "UnknownError"
+          ]
+        },
+        {
+          "name": "Constants",
+          "file": "utils/constants.ts",
+          "enums": [
+            "SiteType",
+            "ActionType"
+          ],
+          "constants": [
+            "API_PATHS",
+            "SITE_DOMAINS",
+            "API_PARAMS",
+            "SELECTORS",
+            "TEXT_CONTENT",
+            "MESSAGES",
+            "HTTP_STATUS"
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  ],
+  "coverage": {
+    "totalFiles": 21,
+    "scannedFiles": 21,
+    "coveragePercent": 100,
+    "byModule": {
+      "src": {
+        "totalFiles": 21,
+        "scannedFiles": 21,
+        "coveragePercent": 100,
+        "hasEntry": true,
+        "hasInterfaces": true,
+        "hasServices": true,
+        "hasAdapters": true,
+        "hasUtils": true,
+        "hasTypes": true,
+        "hasTests": false,
+        "missing": []
+      }
+    }
+  },
+  "ignoredPatterns": [
+    "node_modules/**",
+    ".git/**",
+    ".github/**",
+    "dist/**",
+    "build/**",
+    ".next/**",
+    "__pycache__/**",
+    "*.lock",
+    "*.log",
+    "*.bin",
+    "*.pdf",
+    "*.png",
+    "*.jpg",
+    "*.jpeg",
+    "*.gif",
+    "*.mp4",
+    "*.zip",
+    "*.tar",
+    "*.gz"
+  ],
+  "ignoreStats": {
+    "node_modules": "跳过 (依赖目录)",
+    "dist": "跳过 (构建输出)",
+    ".git": "跳过 (版本控制)"
+  },
+  "truncated": false,
+  "nextSteps": [
+    "建议添加单元测试: 使用 Vitest 测试工具函数和适配器",
+    "建议添加 E2E 测试: 使用 Playwright 测试油猴脚本在真实站点中的行为",
+    "建议添加更多站点适配器: 参考 GenericAdapter 实现",
+    "建议优化错误处理: 添加更详细的错误日志和用户提示"
+  ],
+  "keyFiles": {
+    "entry": "src/main.ts",
+    "config": [
+      "vite.config.ts",
+      "tsconfig.json",
+      "eslint.config.js",
+      "package.json"
+    ],
+    "services": [
+      "src/services/torrent.service.ts",
+      "src/services/site.factory.ts"
+    ],
+    "adapters": [
+      "src/adapters/base.adapter.ts",
+      "src/adapters/generic.adapter.ts",
+      "src/adapters/pter.adapter.ts",
+      "src/adapters/springsunday.adapter.ts"
+    ],
+    "types": [
+      "src/types/site.ts",
+      "src/types/torrent.ts",
+      "src/types/api.ts",
+      "src/types/error.ts"
+    ],
+    "utils": [
+      "src/utils/api.ts",
+      "src/utils/constants.ts",
+      "src/utils/request.ts",
+      "src/utils/concurrency.ts",
+      "src/utils/errors.ts"
+    ],
+    "ci": [
+      ".github/workflows/release.yml"
+    ]
+  },
+  "architecture": {
+    "pattern": "Adapter + Factory + Strategy",
+    "description": "使用适配器模式统一不同 PT 站点的 API 接口，工厂模式根据 URL 自动选择适配器，策略模式实现并发控制",
+    "layers": [
+      {
+        "name": "UI Layer",
+        "files": ["src/main.ts", "src/styles/led-torrent.scss"],
+        "responsibility": "油猴脚本 UI 控制与用户交互"
+      },
+      {
+        "name": "Service Layer",
+        "files": ["src/services/torrent.service.ts", "src/services/site.factory.ts"],
+        "responsibility": "业务逻辑编排与适配器管理"
+      },
+      {
+        "name": "Adapter Layer",
+        "files": [
+          "src/adapters/base.adapter.ts",
+          "src/adapters/generic.adapter.ts",
+          "src/adapters/pter.adapter.ts",
+          "src/adapters/springsunday.adapter.ts"
+        ],
+        "responsibility": "不同 PT 站点的适配器实现"
+      },
+      {
+        "name": "Utility Layer",
+        "files": [
+          "src/utils/request.ts",
+          "src/utils/api.ts",
+          "src/utils/concurrency.ts",
+          "src/utils/errors.ts",
+          "src/utils/constants.ts"
+        ],
+        "responsibility": "HTTP 请求、并发控制、错误处理等工具函数"
+      },
+      {
+        "name": "Type Layer",
+        "files": [
+          "src/types/site.ts",
+          "src/types/torrent.ts",
+          "src/types/api.ts",
+          "src/types/error.ts"
+        ],
+        "responsibility": "TypeScript 类型定义"
+      }
+    ]
+  },
+  "supportedSites": [
+    {
+      "name": "猫站",
+      "domain": "pterclub.net",
+      "adapter": "PterAdapter",
+      "features": ["一键领种"]
+    },
+    {
+      "name": "春天站",
+      "domain": "springsunday.net",
+      "adapter": "SpringSundayAdapter",
+      "features": ["一键领种"]
+    },
+    {
+      "name": "通用 NPHP 站点",
+      "adapter": "GenericAdapter",
+      "features": ["一键领种", "一键弃种"]
+    }
+  ],
+  "documentation": {
+    "rootReadme": "CLAUDE.md",
+    "moduleDocs": [
+      "src/CLAUDE.md"
+    ],
+    "coverageReport": "已完成 100% 覆盖率"
+  }
+}
