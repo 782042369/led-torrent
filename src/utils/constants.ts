@@ -66,7 +66,7 @@ export const API_PATHS = {
  */
 export const SITE_DOMAINS = {
   /** 猫站 */
-  PTER: 'pterclub.com',
+  PTER: 'pterclub.net',
   /** 春天站 */
   SPRING_SUNDAY: 'springsunday.net',
 } as const

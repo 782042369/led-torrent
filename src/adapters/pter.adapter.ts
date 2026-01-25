@@ -14,6 +14,7 @@ import {
   SITE_DOMAINS,
   SiteType,
 } from '@/utils/constants'
+import { setupRequestInterceptors } from '@/utils/request-config'
 
 import { BaseAdapter } from './base.adapter'
 
@@ -25,7 +26,9 @@ export class PterAdapter extends BaseAdapter {
   readonly type = SiteType.PTER
 
   supports(url: string): boolean {
-    return url.includes(`${SITE_DOMAINS.PTER}/${API_PATHS.USER_TORRENT_LIST}`)
+    // 配置HTTP请求拦截器
+    setupRequestInterceptors()
+    return url.includes(`${SITE_DOMAINS.PTER}/${API_PATHS.USER_DETAILS}`)
   }
 
   async loadUserTorrents(
@@ -40,9 +43,9 @@ export class PterAdapter extends BaseAdapter {
       context?.onPageLoad?.(page)
 
       const html = await getNPHPPterUsertorrentlistajax({
-        page,
         userid: userId,
         type: 'seeding',
+        do_ajax: 1,
       })
 
       const doc = parseHTML(html)

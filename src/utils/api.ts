@@ -89,14 +89,14 @@ export async function getNPHPUsertorrentHistory(
  * 获取Pter站点用户种子列表
  *
  * @param params - 请求参数对象
- * @param params.page - 页码
+ * @param params.do_ajax - 默认参数，固定为1
  * @param params.userid - 用户ID
  * @param params.type - 类型，固定为'seeding'
  * @returns 返回Pter站点用户种子列表的字符串响应
  */
 export async function getNPHPPterUsertorrentlistajax(
   params: {
-    page: number
+    do_ajax: 1
     userid: string
     type: 'seeding'
   },
