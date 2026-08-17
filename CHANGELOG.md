@@ -1,3 +1,10 @@
+## [1.8.5](https://github.com/782042369/led-torrent/compare/v1.8.4...v1.8.5) (2026-08-17)
+
+
+### Bug Fixes
+
+* **abandon:** 修复 claim.php 页面无法一键弃种的问题 ([#3](https://github.com/782042369/led-torrent/issues/3)) ([82283f4](https://github.com/782042369/led-torrent/commit/82283f413da726365c0a684fa47870e279866c55))
+
 ## [1.8.4](https://github.com/782042369/led-torrent/compare/v1.8.3...v1.8.4) (2026-01-25)
 
 ## [1.8.3](https://github.com/782042369/led-torrent/compare/v1.8.2...v1.8.3) (2026-01-25)
