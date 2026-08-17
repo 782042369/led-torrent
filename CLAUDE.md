@@ -125,37 +125,37 @@ graph TD
 
 ## 模块索引
 
-| 模块路径 | 职责描述 | 语言 | 状态 |
-| --- | --- | --- | --- |
-| **应用入口** |||
-| [src/main.ts](#src-main-ts) | 应用启动入口，初始化路由和样式 | TypeScript | ✅ 已重构 |
-| **路由层** |||
-| [src/router/](#src-router) | 路由系统，负责 URL 匹配和事件处理 | TypeScript | ✅ 新增 |
-| [src/router/index.ts](#src-router) | 路由分发器，初始化应用和匹配路由 | TypeScript | ✅ 已扫描 |
-| [src/router/routes.ts](#src-router) | 路由配置，定义各站点的匹配规则 | TypeScript | ✅ 已扫描 |
-| **适配器层** |||
-| [src/adapters/](#src-adapters) | 站点适配器，实现各站点的业务逻辑 | TypeScript | ✅ 已重构 |
-| [src/adapters/base.ts](#src-adapters) | 适配器基类和接口定义 | TypeScript | ✅ 已扫描 |
-| [src/adapters/common.ts](#src-adapters) | 通用站点适配器（Nexus PHP） | TypeScript | ✅ 已扫描 |
-| [src/adapters/pter.ts](#src-adapters) | 猫站适配器（pterclub.com） | TypeScript | ✅ 已扫描 |
-| [src/adapters/springsunday.ts](#src-adapters) | 春天站适配器（springsunday.net） | TypeScript | ✅ 已扫描 |
-| **核心层** |||
-| [src/core/](#src-core) | 核心基础设施，提供底层能力 | TypeScript | ✅ 新增 |
-| [src/core/api.ts](#src-core-api) | API 接口定义，所有站点的 API | TypeScript | ✅ 已扫描 |
-| [src/core/request.ts](#src-core-request) | HTTP 请求封装，支持超时 | TypeScript | ✅ 已扫描 |
-| [src/core/concurrent.ts](#src-core-concurrent) | 并发控制和速率限制器 | TypeScript | ✅ 已扫描 |
-| [src/core/types.ts](#src-core-types) | 核心类型定义 | TypeScript | ✅ 已扫描 |
-| **UI 层** |||
-| [src/ui/](#src-ui) | UI 组件，统一管理界面 | TypeScript | ✅ 新增 |
-| [src/ui/components.ts](#src-ui-components) | UI 组件实现（UIManager、UICreator、ButtonAnimator） | TypeScript | ✅ 已扫描 |
-| **工具层** |||
-| [src/utils/](#src-utils) | 工具函数库，纯函数集合 | TypeScript | ✅ 已重构 |
-| [src/utils/dom.ts](#src-utils-dom) | DOM 工具函数（checkForNextPage） | TypeScript | ✅ 已扫描 |
-| [src/utils/format.ts](#src-utils-format) | 格式化工具（getLedMsg） | TypeScript | ✅ 已扫描 |
-| [src/utils/url.ts](#src-utils-url) | URL 工具（getvl） | TypeScript | ✅ 已扫描 |
-| **样式层** |||
-| [src/styles/](#src-styles) | SCSS 样式文件 | SCSS | ✅ 已扫描 |
-| [src/styles/led-torrent.scss](#src-styles) | 主样式文件，按钮和容器样式 | SCSS | ✅ 已扫描 |
+| 模块路径                                       | 职责描述                                            | 语言       | 状态      |
+| ---------------------------------------------- | --------------------------------------------------- | ---------- | --------- |
+| **应用入口**                                   |                                                     |            |
+| [src/main.ts](#src-main-ts)                    | 应用启动入口，初始化路由和样式                      | TypeScript | ✅ 已重构 |
+| **路由层**                                     |                                                     |            |
+| [src/router/](#src-router)                     | 路由系统，负责 URL 匹配和事件处理                   | TypeScript | ✅ 新增   |
+| [src/router/index.ts](#src-router)             | 路由分发器，初始化应用和匹配路由                    | TypeScript | ✅ 已扫描 |
+| [src/router/routes.ts](#src-router)            | 路由配置，定义各站点的匹配规则                      | TypeScript | ✅ 已扫描 |
+| **适配器层**                                   |                                                     |            |
+| [src/adapters/](#src-adapters)                 | 站点适配器，实现各站点的业务逻辑                    | TypeScript | ✅ 已重构 |
+| [src/adapters/base.ts](#src-adapters)          | 适配器基类和接口定义                                | TypeScript | ✅ 已扫描 |
+| [src/adapters/common.ts](#src-adapters)        | 通用站点适配器（Nexus PHP）                         | TypeScript | ✅ 已扫描 |
+| [src/adapters/pter.ts](#src-adapters)          | 猫站适配器（pterclub.com）                          | TypeScript | ✅ 已扫描 |
+| [src/adapters/springsunday.ts](#src-adapters)  | 春天站适配器（springsunday.net）                    | TypeScript | ✅ 已扫描 |
+| **核心层**                                     |                                                     |            |
+| [src/core/](#src-core)                         | 核心基础设施，提供底层能力                          | TypeScript | ✅ 新增   |
+| [src/core/api.ts](#src-core-api)               | API 接口定义，所有站点的 API                        | TypeScript | ✅ 已扫描 |
+| [src/core/request.ts](#src-core-request)       | HTTP 请求封装，支持超时                             | TypeScript | ✅ 已扫描 |
+| [src/core/concurrent.ts](#src-core-concurrent) | 并发控制和速率限制器                                | TypeScript | ✅ 已扫描 |
+| [src/core/types.ts](#src-core-types)           | 核心类型定义                                        | TypeScript | ✅ 已扫描 |
+| **UI 层**                                      |                                                     |            |
+| [src/ui/](#src-ui)                             | UI 组件，统一管理界面                               | TypeScript | ✅ 新增   |
+| [src/ui/components.ts](#src-ui-components)     | UI 组件实现（UIManager、UICreator、ButtonAnimator） | TypeScript | ✅ 已扫描 |
+| **工具层**                                     |                                                     |            |
+| [src/utils/](#src-utils)                       | 工具函数库，纯函数集合                              | TypeScript | ✅ 已重构 |
+| [src/utils/dom.ts](#src-utils-dom)             | DOM 工具函数（checkForNextPage）                    | TypeScript | ✅ 已扫描 |
+| [src/utils/format.ts](#src-utils-format)       | 格式化工具（getLedMsg）                             | TypeScript | ✅ 已扫描 |
+| [src/utils/url.ts](#src-utils-url)             | URL 工具（getvl）                                   | TypeScript | ✅ 已扫描 |
+| **样式层**                                     |                                                     |            |
+| [src/styles/](#src-styles)                     | SCSS 样式文件                                       | SCSS       | ✅ 已扫描 |
+| [src/styles/led-torrent.scss](#src-styles)     | 主样式文件，按钮和容器样式                          | SCSS       | ✅ 已扫描 |
 
 ---
 
@@ -290,9 +290,11 @@ pnpm lint
 
 ```typescript
 // src/adapters/newsite.ts
-import { BaseSiteAdapter, DOMHelper } from './base'
 import type { TorrentDataIdsType } from '@/core/types'
+
 import { getNewSiteApi } from '@/core/api'
+
+import { BaseSiteAdapter, DOMHelper } from './base'
 
 class NewSiteAdapter extends BaseSiteAdapter {
   siteName = '新站点'
@@ -323,7 +325,8 @@ class NewSiteAdapter extends BaseSiteAdapter {
     try {
       const data = await claimNewSiteTorrent(id)
       return data.ret === 0 ? '领取成功' : '领取失败'
-    } catch {
+    }
+    catch {
       return '领取失败'
     }
   }
@@ -469,6 +472,7 @@ initApp()
    ```
 
 5. **导出适配器**
+
    ```typescript
    // src/adapters/index.ts
    export * from './newsite'
@@ -478,7 +482,7 @@ initApp()
 
    ```typescript
    // src/router/index.ts
-   import { loadNewSiteUserTorrents, handleLedNewSiteTorrent } from '@/adapters'
+   import { handleLedNewSiteTorrent, loadNewSiteUserTorrents } from '@/adapters'
 
    // 在 handleTorrentsActions 中添加对应的 action 处理
    ```
@@ -523,11 +527,11 @@ initApp()
 
 ## 支持的站点
 
-| 站点名称 | 域名 | 适配器文件 | 状态 |
-| --- | --- | --- | --- |
-| 猫站 | pterclub.com | `pter.ts` | ✅ 已支持 |
-| 春天站 | springsunday.net | `springsunday.ts` | ✅ 已支持 |
-| 通用站点 | * (Nexus PHP) | `common.ts` | ✅ 已支持 |
+| 站点名称 | 域名             | 适配器文件        | 状态      |
+| -------- | ---------------- | ----------------- | --------- |
+| 猫站     | pterclub.com     | `pter.ts`         | ✅ 已支持 |
+| 春天站   | springsunday.net | `springsunday.ts` | ✅ 已支持 |
+| 通用站点 | \* (Nexus PHP)   | `common.ts`       | ✅ 已支持 |
 
 ---
 

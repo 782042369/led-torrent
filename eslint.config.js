@@ -27,6 +27,6 @@ export default antfu({
     'node/prefer-global/process': 'off',
     'no-alert': 'off',
   },
-  ignores: ['**/node_modules/**', 'pnpm-lock.yaml', 'dist', '.md'],
+  ignores: ['**/node_modules/**', 'pnpm-lock.yaml', 'dist', '**/*.md'],
   formatters: true,
 })

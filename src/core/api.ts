@@ -8,6 +8,7 @@
 
 import type { LedTorrentDetails } from './types'
 
+import { API_PATHS } from './constants'
 import request from './request'
 
 /**
@@ -30,7 +31,7 @@ export function getNPHPLedTorrent(
     body.append('action', 'removeClaim')
     body.append('params[id]', `${id}`)
   }
-  return request<LedTorrentDetails>(`/ajax.php`, {
+  return request<LedTorrentDetails>(API_PATHS.AJAX, {
     method: 'POST',
     body,
   })
@@ -53,7 +54,7 @@ export async function getNPHPUsertorrentlistajax(
   },
 ) {
   return request<string>(
-    'getusertorrentlistajax.php',
+    API_PATHS.USER_TORRENT_LIST_AJAX,
     {
       method: 'GET',
       params,
@@ -75,7 +76,7 @@ export async function getNPHPUsertorrentHistory(
     uid: string
   },
 ) {
-  return request<string>('claim.php', {
+  return request<string>(API_PATHS.CLAIM_HISTORY, {
     method: 'GET',
     params,
   })
@@ -98,7 +99,7 @@ export async function getNPHPPterUsertorrentlistajax(
   },
 ) {
   return request<string>(
-    'getusertorrentlist.php',
+    API_PATHS.PTER_USER_TORRENT_LIST,
     {
       method: 'GET',
       params,
@@ -135,7 +136,7 @@ export function getSSDLedTorrent(
   const body = new FormData()
   body.append('action', 'add')
   body.append('id', `${id}`)
-  return request<LedTorrentDetails>(`/adopt.php`, {
+  return request<LedTorrentDetails>(API_PATHS.SSD_ADOPT, {
     method: 'POST',
     body,
   })

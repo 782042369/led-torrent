@@ -47,8 +47,7 @@ export function initApp() {
   if (route) {
     button.textContent = route.buttonText
     setupButtonListener(button, () =>
-      handleTorrentsActions(button, messageList, getvl(route.userIdParam), route.action)
-    )
+      handleTorrentsActions(button, messageList, getvl(route.userIdParam), route.action))
   }
 
   // 4. 将面板添加到页面
@@ -68,12 +67,12 @@ export function initApp() {
 
 ```typescript
 export interface RouteConfig {
-  name: string                      // 路由名称
-  pattern: string | string[]        // URL 匹配模式
-  buttonText: string                // 按钮文本
-  initMessage?: string              // 初始消息（可选）
-  action: RouteAction               // 操作类型
-  userIdParam: 'id' | 'uid' | 'userid'  // 用户 ID 参数名
+  name: string // 路由名称
+  pattern: string | string[] // URL 匹配模式
+  buttonText: string // 按钮文本
+  initMessage?: string // 初始消息（可选）
+  action: RouteAction // 操作类型
+  userIdParam: 'id' | 'uid' | 'userid' // 用户 ID 参数名
 }
 ```
 
@@ -261,7 +260,7 @@ async function handleTorrentsActions(
 2. 在 `index.ts` 中导入对应的适配器函数：
 
    ```typescript
-   import { loadNewSiteUserTorrents, handleLedNewSiteTorrent } from '@/adapters'
+   import { handleLedNewSiteTorrent, loadNewSiteUserTorrents } from '@/adapters'
    ```
 
 3. 在 `handleTorrentsActions` 中添加对应的 action 处理

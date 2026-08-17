@@ -22,3 +22,6 @@ node_modules
 
 # Git worktrees
 worktrees/
+
+# OMC runtime state
+.omc

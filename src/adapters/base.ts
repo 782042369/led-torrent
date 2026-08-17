@@ -43,7 +43,7 @@ export interface ISiteAdapter {
   loadUserTorrents: (
     userid: string,
     allData: TorrentDataIdsType,
-    ledlist: string[]
+    ledlist: string[],
   ) => Promise<void>
 
   /**
@@ -56,7 +56,7 @@ export interface ISiteAdapter {
   handleLedTorrent: (
     arr: TorrentDataIdsType,
     ui: UIManager,
-    stats: Record<string, number>
+    stats: Record<string, number>,
   ) => Promise<void>
 }
 

@@ -8,6 +8,8 @@
 
 import type { RequestOptions } from './types'
 
+import { TEXT_RESPONSE_APIS } from './constants'
+
 /**
  * 带超时的 fetch 请求
  * 防止请求卡死，超过指定时间自动取消
@@ -83,35 +85,8 @@ async function request<T>(
       timeout,
     )
 
-    // 特殊处理：viewclaims.php 接口
-    if (url.includes('viewclaims.php')) {
-      try {
-        await response.json()
-        return Promise.resolve(true as T)
-      }
-      catch {
-        return Promise.resolve(false as T)
-      }
-    }
-
-    // 特殊处理：user-seeding-torrent 接口错误检测
-    // 如果登录失效（500/404/403）或重定向到登录页，直接返回错误
-    if (
-      url.includes('user-seeding-torrent')
-      && (response.status === 500
-        || response.status === 404
-        || response.status === 403
-        || response.url.includes('/login'))
-    ) {
-      return Promise.reject(response)
-    }
-
-    // 特殊处理：返回文本格式的接口
-    if (
-      url.includes('getusertorrentlistajax')
-      || url.includes('claim.php')
-      || url.includes('getusertorrentlist.php')
-    ) {
+    // 特殊处理：返回文本格式的接口（HTML 页面）
+    if (TEXT_RESPONSE_APIS.some(api => url.includes(api))) {
       return (await response.text()) as T
     }
 

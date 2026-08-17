@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         一键领种、弃种
 // @namespace    方便用户一键领种、弃种
-// @version      1.7
+// @version      1.8.4
 // @author       waibuzheng
 // @description  努力支持多个站点一键领种、一键放弃本人没在做种的种子（慎用、测试可用）
 // @icon         https://lsky.939593.xyz:11111/Y7bbx9.jpg
-// @match        http*://*/userdetails.php?id=*
-// @match        http*://*/claim.php?uid=*
+// @match        **/userdetails.php?id=*
+// @match        **://*/claim.php?uid=*
 // @match        http*://pterclub.com/getusertorrentlist.php?*
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -237,6 +237,18 @@ static isVisible(element) {
       return style.display !== "none";
     }
   }
+  const API_PATHS = {
+AJAX: "/ajax.php",
+USER_TORRENT_LIST_AJAX: "getusertorrentlistajax.php",
+CLAIM_HISTORY: "claim.php",
+PTER_USER_TORRENT_LIST: "getusertorrentlist.php",
+SSD_ADOPT: "/adopt.php"
+  };
+  const TEXT_RESPONSE_APIS = [
+    API_PATHS.USER_TORRENT_LIST_AJAX,
+    API_PATHS.CLAIM_HISTORY,
+    API_PATHS.PTER_USER_TORRENT_LIST
+  ];
   async function fetchWithTimeout(input, init, timeout = 1e5) {
     return Promise.race([
       fetch(input, init),
@@ -273,18 +285,7 @@ static isVisible(element) {
         },
         timeout
       );
-      if (url.includes("viewclaims.php")) {
-        try {
-          await response.json();
-          return Promise.resolve(true);
-        } catch {
-          return Promise.resolve(false);
-        }
-      }
-      if (url.includes("user-seeding-torrent") && (response.status === 500 || response.status === 404 || response.status === 403 || response.url.includes("/login"))) {
-        return Promise.reject(response);
-      }
-      if (url.includes("getusertorrentlistajax") || url.includes("claim.php") || url.includes("getusertorrentlist.php")) {
+      if (TEXT_RESPONSE_APIS.some((api) => url.includes(api))) {
         return await response.text();
       }
       return await response.json();
@@ -302,14 +303,14 @@ static isVisible(element) {
       body.append("action", "removeClaim");
       body.append("params[id]", `${id}`);
     }
-    return request(`/ajax.php`, {
+    return request(API_PATHS.AJAX, {
       method: "POST",
       body
     });
   }
   async function getNPHPUsertorrentlistajax(params) {
     return request(
-      "getusertorrentlistajax.php",
+      API_PATHS.USER_TORRENT_LIST_AJAX,
       {
         method: "GET",
         params
@@ -317,14 +318,14 @@ static isVisible(element) {
     );
   }
   async function getNPHPUsertorrentHistory(params) {
-    return request("claim.php", {
+    return request(API_PATHS.CLAIM_HISTORY, {
       method: "GET",
       params
     });
   }
   async function getNPHPPterUsertorrentlistajax(params) {
     return request(
-      "getusertorrentlist.php",
+      API_PATHS.PTER_USER_TORRENT_LIST,
       {
         method: "GET",
         params
@@ -342,7 +343,7 @@ static isVisible(element) {
     const body = new FormData();
     body.append("action", "add");
     body.append("id", `${id}`);
-    return request(`/adopt.php`, {
+    return request(API_PATHS.SSD_ADOPT, {
       method: "POST",
       body
     });
@@ -624,6 +625,7 @@ static isVisible(element) {
     } else if (action === "abandon") {
       if (confirm("真的要弃种吗?")) {
         button.textContent = "获取所有数据，请稍等。";
+        allData.length = 0;
         await loadUserTorrentsHistory(userId, allData, ledlist);
         ulbox.innerHTML += `<li>获取所有没在做种且领取状态的数据一共${allData.length}个</li>`;
         if (allData.length) {

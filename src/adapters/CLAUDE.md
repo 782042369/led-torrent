@@ -45,16 +45,16 @@ adapters/
 ```typescript
 export interface ISiteAdapter {
   siteName: string
-  loadUserTorrents(
+  loadUserTorrents: (
     userid: string,
     allData: TorrentDataIdsType,
     ledlist: string[]
-  ): Promise<void>
-  handleLedTorrent(
+  ) => Promise<void>
+  handleLedTorrent: (
     arr: TorrentDataIdsType,
     ui: UIManager,
     stats: Record<string, number>
-  ): Promise<void>
+  ) => Promise<void>
 }
 ```
 
@@ -235,7 +235,8 @@ return DOMHelper.checkNextPage(
 try {
   const data = await getNPHPPterLedTorrent(id)
   return data ? '领取成功' : '领取失败'
-} catch {
+}
+catch {
   return '领取失败'
 }
 ```
@@ -300,7 +301,8 @@ return DOMHelper.checkNextPage(
 try {
   const data = await getSSDLedTorrent(id)
   return data && data.ret === 0 ? '领取成功' : '领取失败'
-} catch {
+}
+catch {
   return '领取失败'
 }
 ```
@@ -405,9 +407,11 @@ querySelectorAll
 1. 创建 `src/adapters/newsite.ts`：
 
    ```typescript
-   import { BaseSiteAdapter, DOMHelper } from './base'
    import type { TorrentDataIdsType } from '@/core/types'
+
    import { getNewSiteApi } from '@/core/api'
+
+   import { BaseSiteAdapter, DOMHelper } from './base'
 
    class NewSiteAdapter extends BaseSiteAdapter {
      siteName = '新站点'
@@ -438,7 +442,8 @@ querySelectorAll
        try {
          const data = await claimNewSiteTorrent(id)
          return data.ret === 0 ? '领取成功' : '领取失败'
-       } catch {
+       }
+       catch {
          return '领取失败'
        }
      }

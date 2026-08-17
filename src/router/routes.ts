@@ -75,18 +75,18 @@ export interface RouteHandler {
   loadUserTorrents: (
     userid: string,
     allData: TorrentDataIdsType,
-    ledlist: string[]
+    ledlist: string[],
   ) => Promise<void>
   /** 执行领种/弃种操作 */
   handleLedTorrent: (
     arr: TorrentDataIdsType,
     button: HTMLButtonElement,
-    json: { [key in string]: number }
+    json: { [key in string]: number },
   ) => Promise<void>
   /** 加载历史领种数据（可选，用于弃种功能） */
   loadUserTorrentsHistory?: (
     uid: string,
     allData: TorrentDataIdsType,
-    ledlist: string[]
+    ledlist: string[],
   ) => Promise<void>
 }

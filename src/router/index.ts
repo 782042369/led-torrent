@@ -109,6 +109,8 @@ async function handleTorrentsActions(
     // 特殊处理：弃种需要先加载历史数据
     if (confirm('真的要弃种吗?')) {
       button.textContent = '获取所有数据，请稍等。'
+      // 弃种操作的是领取记录ID（claim_id），不是上面的可认领种子ID，必须清空防止误弃
+      allData.length = 0
       await loadUserTorrentsHistory(userId, allData, ledlist)
       ulbox.innerHTML += `<li>获取所有没在做种且领取状态的数据一共${allData.length}个</li>`
       if (allData.length) {

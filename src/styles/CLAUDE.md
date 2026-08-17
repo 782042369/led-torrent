@@ -38,7 +38,6 @@ styles/
   align-items: flex-start;
   justify-content: center;
 }
-
 ```
 
 **设计说明**：
@@ -58,7 +57,6 @@ ul {
   margin-left: 0;
   padding-left: 0;
 }
-
 ```
 
 #### `.led-box li`
@@ -77,7 +75,6 @@ li {
   font-size: 14px;
   margin-left: 0;
 }
-
 ```
 
 **视觉效果**：
@@ -111,7 +108,6 @@ li {
     box-shadow ease-in 0.25s;
   box-shadow: 0 2px 25px rgba(255, 0, 130, 0.5);
 }
-
 ```
 
 **视觉效果**：
@@ -127,7 +123,6 @@ li {
 &:hover {
   background-color: #ff0081;
 }
-
 ```
 
 #### 点击状态
@@ -138,7 +133,6 @@ li {
   background-color: #e60074;
   box-shadow: 0 2px 25px rgba(255, 0, 130, 0.2);
 }
-
 ```
 
 **动画效果**：
@@ -166,7 +160,6 @@ li {
   transition: all ease-in-out 0.5s;
   background-repeat: no-repeat;
 }
-
 ```
 
 **设计原理**：
@@ -202,7 +195,6 @@ li {
   background-image: radial-gradient(circle, #ff0081 20%, transparent 20%);
   // ... 共 7 个径向渐变
 }
-
 ```
 
 ---
@@ -263,7 +255,6 @@ li {
   display: block;
   animation: bottomBubbles ease-in-out 0.75s forwards;
 }
-
 ```
 
 **触发方式**（JavaScript）：
@@ -351,7 +342,6 @@ button.addEventListener('click', (e) => {
 // 全局替换颜色变量
 background-color: #your-color;
 box-shadow: 0 2px 25px rgba(your-r, your-g, your-b, 0.5);
-
 ```
 
 ### 调整容器位置
@@ -366,7 +356,6 @@ box-shadow: 0 2px 25px rgba(your-r, your-g, your-b, 0.5);
   left: 50%; // 水平居中
   transform: translateX(-50%);
 }
-
 ```
 
 ### 调整按钮尺寸
@@ -380,7 +369,6 @@ box-shadow: 0 2px 25px rgba(your-r, your-g, your-b, 0.5);
   font-size: 16px; // 更小的字体
   padding: 6px 12px; // 调整内边距
 }
-
 ```
 
 ---
@@ -440,7 +428,6 @@ setTimeout(() => {
 .bubbly-button.animate:after {
   display: none !important;
 }
-
 ```
 
 ### Q2: 消息列表过长怎么办？
@@ -452,7 +439,6 @@ setTimeout(() => {
   max-height: 300px;
   overflow-y: auto;
 }
-
 ```
 
 ### Q3: 如何适配移动端？
@@ -472,7 +458,6 @@ setTimeout(() => {
     width: 100%;
   }
 }
-
 ```
 
 ---
