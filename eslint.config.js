@@ -27,15 +27,6 @@ export default antfu({
     'node/prefer-global/process': 'off',
     'no-alert': 'off',
   },
-  ignores: [
-    '**/node_modules/**',
-    'pnpm-lock.yaml',
-    'dist',
-    // 忽略文档文件
-    '*.md',
-    '**/CLAUDE.md',
-    '**/API.md',
-    '**/README*.md',
-  ],
+  ignores: ['**/node_modules/**', 'pnpm-lock.yaml', 'dist', '.md'],
   formatters: true,
 })

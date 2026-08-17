@@ -9,6 +9,7 @@ import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import monkey from 'vite-plugin-monkey'
 
+import { version } from './package.json'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -18,11 +19,12 @@ export default defineConfig({
         icon: 'https://lsky.939593.xyz:11111/Y7bbx9.jpg',
         namespace: '方便用户一键领种、弃种',
         match: [
-          'http*://*/userdetails.php?id=*',
-          'http*://*/claim.php?uid=*',
+          '**/userdetails.php?id=*',
+          '**://*/claim.php?uid=*',
           'http*://pterclub.com/getusertorrentlist.php?*',
+          // 'https://ptsbao.club/userdetails.php?id=**',
         ],
-        version: '1.7',
+        version,
         name: '一键领种、弃种',
         author: 'waibuzheng',
         description:
